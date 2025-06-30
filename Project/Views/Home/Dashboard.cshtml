@@ -1,0 +1,391 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var username = ViewBag.UserName ?? "Admin"; // Menggunakan ViewBag.UserName jika tersedia
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    /* Global Styles */
+    body {
+        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+        position: relative;
+    }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+
+    /* Topbar */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px); /* Frosted glass effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+            animation: textGlow 2s infinite alternate;
+        }
+
+        .topbar .user {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .topbar .user strong {
+                color: #ffeb3b; /* Accent color for username */
+                position: relative;
+                display: inline-block;
+                animation: rubberBand 1s forwards; /* Animation on load */
+            }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+
+    /* Navbar */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto; /* Centered and more vertical space */
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        position: relative;
+        overflow: hidden;
+        /* NEW: Untuk animasi dari tengah */
+        transform-origin: center center;
+    }
+
+        .navbar-item:hover {
+            background-color: #ffeb3b; /* Vibrant yellow on hover */
+            color: #d50000; /* Dark red text */
+            transform: scale(1.08); /* Lebih besar dari sebelumnya, dari tengah */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            /* Efek shimmer dari tengah */
+            animation: shimmerCenter 0.8s forwards; /* Animasi shimmer */
+        }
+
+        .navbar-item.active {
+            background-color: white;
+            color: #d50000;
+            transform: scale(1.02); /* Sedikit lebih besar untuk aktif */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffeb3b; /* Highlight active state */
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+    /* Apply shimmer to active/hovered items */
+    .navbar-item:hover {
+        background: linear-gradient(90deg, #ffeb3b 0%, white 50%, #ffeb3b 100%);
+        background-size: 200% 100%;
+        animation: shimmerCenter 0.8s forwards;
+        color: #d50000; /* Ensure text color remains dark red */
+    }
+
+
+    /* Main Container */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out; /* Fade in content */
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+        background: rgba(255, 255, 255, 0.15); /* Slightly more opaque for prominence */
+        border-radius: 20px; /* More rounded */
+        padding: 50px; /* More padding */
+        text-align: center;
+        margin-bottom: 50px; /* More space below */
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+        backdrop-filter: blur(8px); /* Frosted glass */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideInLeft 1s ease-out; /* Slide in from left */
+    }
+
+        .welcome-banner h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px; /* Larger, more impactful heading */
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6); /* Deeper text shadow */
+            animation: textShine 3s infinite alternate; /* Shine effect */
+        }
+
+        .welcome-banner p {
+            font-size: 20px; /* Larger paragraph text */
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .welcome-banner em {
+            color: #ffeb3b; /* Accent color for emphasis */
+            font-style: normal; /* Remove italic for bold emphasis */
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+
+    /* Feature Cards */
+    .feature-card {
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
+        border-radius: 20px; /* More rounded corners */
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow */
+        color: #333;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth transition */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Distribute content */
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        animation: fadeInUp 0.8s ease-out forwards; /* Fade in and up */
+        opacity: 0; /* Start hidden for animation */
+    }
+
+        .feature-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .feature-card:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+
+        .feature-card:nth-child(5) {
+            animation-delay: 1.0s;
+        }
+
+        .feature-card:nth-child(6) {
+            animation-delay: 1.2s;
+        }
+
+        /* Hover Effect for Feature Cards */
+        .feature-card:hover {
+            transform: translateY(-15px) rotateX(5deg); /* Lift and rotate slightly, more pronounced than initial */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25); /* More pronounced shadow */
+            background-color: #fff;
+            border-color: #ffeb3b; /* Highlight border on hover */
+        }
+
+    .feature-icon {
+        font-size: 50px; /* Larger icon */
+        color: #d50000;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        color: #ffeb3b; /* Change icon color on hover */
+        animation: spinIcon 0.5s ease-out; /* Spin icon on hover */
+    }
+
+    .feature-card h5 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 22px; /* Larger heading */
+        margin-bottom: 15px;
+        color: #d50000;
+        letter-spacing: 0.5px;
+    }
+
+    .feature-card p {
+        font-size: 16px; /* Slightly larger text */
+        color: #555;
+        line-height: 1.6;
+        flex-grow: 1; /* Ensure consistent card height */
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 15px;
+        }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .welcome-banner {
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+            .welcome-banner h2 {
+                font-size: 32px;
+            }
+
+            .welcome-banner p {
+                font-size: 16px;
+            }
+
+        .feature-card {
+            padding: 25px;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+        }
+
+        .feature-card h5 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<div class="main-container container">
+
+    <div class="navbar-rounded">
+        <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+            <i class="fas fa-graduation-cap"></i> Training
+        </a>
+        <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+            <i class="fas fa-award"></i> Certification
+        </a>
+        <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+            <i class="fas fa-folder-open"></i> Resources
+        </a>
+        <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+            <i class="fas fa-shield-alt"></i> Privacy
+        </a>
+    </div>
+
+    <div class="welcome-banner">
+        <h2>Welcome to CorpTrain Weatherford</h2>
+        <p>Memberdayakan keunggulan melalui pelatihan yang <em>terstandarisasi</em>, <em>efektif</em>, dan <em>dapat dilacak</em>.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-book-reader"></i></div>
+                <h5>Learning Management</h5>
+                <p>Akses modul pembelajaran interaktif dengan pelacakan visual dan pencapaian tonggak sejarah yang jelas.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                <h5>Certifications</h5>
+                <p>Dapatkan sertifikasi digital berstandar industri setelah berhasil menyelesaikan evaluasi dan pengujian.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h5>Analytics & Reports</h5>
+                <p>Dasbor admin yang komprehensif dengan pelacakan peserta, kemajuan belajar, dan ekspor laporan detail.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h5>Team Collaboration</h5>
+                <p>Dorong budaya pembelajaran antarteman dan kolaborasi antar departemen dengan fitur-fitur inovatif.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-clipboard-check"></i></div>
+                <h5>Evaluation & Feedback</h5>
+                <p>Kuis dan survei terintegrasi untuk mengukur retensi pengetahuan dan mengumpulkan umpan balik peserta yang berharga.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-download"></i></div>
+                <h5>Certificate Download</h5>
+                <p>Unduh sertifikat Anda secara otomatis segera setelah menyelesaikan modul pelatihan sesuai kriteria yang ditetapkan.</p>
+            </div>
+        </div>
+    </div>
+</div>

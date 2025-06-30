@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CorpTrain - Learning Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-red: #b00000;
+            --dark-maroon: #8b0000;
+            --accent-yellow: #ffd700;
+            --light-grey: #f8f9fa;
+            --white-color: #ffffff;
+            --black-color: #000000;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--light-grey);
+            font-size: 18px;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--dark-maroon), var(--primary-red));
+            border-radius: 0 0 20px 20px;
+        }
+
+        .navbar-brand, .nav-link {
+            color: var(--white-color) !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+        }
+
+            .nav-link:hover {
+                color: var(--accent-yellow) !important;
+                text-shadow: 0 0 8px var(--accent-yellow), 0 0 15px rgba(255, 215, 0, 0.5); /* Subtle glow on hover */
+            }
+
+        .hero-section {
+            background: linear-gradient(to right, #990000, #cc0000);
+            color: var(--white-color);
+            padding: 160px 20px 140px;
+            border-radius: 0 0 40px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero-section h1 {
+                font-size: 4.5rem;
+                font-weight: 900;
+                color: var(--white-color); /* Ensure text color is white */
+                /* Reduced glow effect for "Selamat Datang" */
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), /* Softer white glow */
+                0 0 15px rgba(0, 0, 0, 0.5); /* Clearer, subtle black shadow */
+                transition: all 0.5s ease-in-out;
+            }
+                /* Animation for H1 on load, can be combined with previous animate__fadeInUp */
+                .hero-section h1.animate__animated.animate__fadeInUp {
+                    animation-duration: 1.5s; /* Make animation a bit longer */
+                }
+
+            .hero-section::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+                animation: pulse 5s infinite;
+            }
+
+            .hero-section p {
+                font-size: 1.4rem;
+                max-width: 900px;
+                margin: 20px auto;
+            }
+
+        .section {
+            padding: 100px 20px;
+            border-radius: 40px;
+        }
+
+            .section h2 {
+                font-weight: 900;
+                font-size: 2.8rem;
+                margin-bottom: 30px;
+                position: relative;
+                display: inline-block; /* Essential for text-shadow and underline */
+                color: var(--primary-red); /* Base color for the text */
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2), /* Subtle shadow for depth */
+                0 0 10px rgba(255, 215, 0, 0.4); /* Soft yellow glow */
+                transition: text-shadow 0.3s ease-in-out;
+                text-align: center; /* Pastikan judul di tengah */
+                width: 100%; /* Agar inline-block tetap mengambil lebar penuh container untuk center */
+            }
+
+                /* Animated Underline for .section h2 */
+                .section h2::after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    bottom: -10px;
+                    width: 0;
+                    height: 5px;
+                    background: var(--accent-yellow);
+                    border-radius: 5px;
+                    transition: width 0.4s ease-out;
+                }
+
+            .section:hover h2::after {
+                width: 80px;
+            }
+
+            .section p {
+                font-size: 1.25rem;
+            }
+
+        .about-box {
+            background: linear-gradient(to right, var(--white-color), #f0f0f0);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            padding: 50px;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .feature-icon {
+            font-size: 60px;
+            color: var(--primary-red);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .feature-box:hover .feature-icon {
+            transform: scale(1.1); /* Icon slightly scales up on hover */
+        }
+
+        .feature-box {
+            background: var(--white-color);
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            border-radius: 25px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+            .feature-box:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+                background: linear-gradient(to bottom right, #fffdfd, #f7f7f7); /* Subtle lighter background on hover */
+            }
+
+        .section-bg-red {
+            background: linear-gradient(135deg, #b00028, #7c001b);
+            color: var(--white-color);
+            border-radius: 40px;
+        }
+
+            .section-bg-red h2 {
+                color: var(--white-color); /* Ensure text color is white for this section */
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), /* Softer white glow */
+                0 0 15px rgba(0, 0, 0, 0.5); /* Clearer, subtle black shadow */
+                transition: text-shadow 0.3s ease-in-out;
+                text-align: center; /* Pastikan judul di tengah */
+                width: 100%; /* Agar inline-block tetap mengambil lebar penuh container untuk center */
+            }
+
+                .section-bg-red h2::after {
+                    background: var(--accent-yellow); /* Underline becomes yellow on red background */
+                    transition: width 0.4s ease-out;
+                }
+
+            .section-bg-red:hover h2::after {
+                width: 80px;
+            }
+
+
+        .btn-danger {
+            background-color: var(--primary-red);
+            border-color: var(--primary-red);
+            border-radius: 30px;
+            padding: 14px 36px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease-in-out;
+            color: var(--white-color); /* Pastikan teks tombol bahaya tetap putih */
+        }
+
+            .btn-danger:hover {
+                background-color: var(--dark-maroon);
+                border-color: var(--dark-maroon);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            }
+
+        .btn-light {
+            border-radius: 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease-in-out;
+            color: var(--white-color) !important; /* Mengembalikan warna teks tombol Login menjadi putih */
+            background-color: transparent; /* Atau atur sesuai keinginan, ini untuk transparansi */
+            border: 1px solid var(--white-color); /* Tambahkan border putih agar terlihat */
+        }
+
+            .btn-light:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                color: var(--accent-yellow) !important; /* Teks kuning saat hover */
+                border-color: var(--accent-yellow); /* Border kuning saat hover */
+            }
+
+
+        .footer-text {
+            padding: 30px 0;
+            font-size: 0.95rem;
+            color: #666;
+            text-align: left;
+            margin-left: 20px;
+        }
+
+        hr {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow animate__animated animate__fadeInDown">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">CorpTrain</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#about">Tentang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Fitur</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-light px-3 ms-2" href="/Account/Login">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section animate__animated animate__fadeIn">
+        <div class="container position-relative">
+            <h1 class="animate__animated animate__fadeInUp">Selamat Datang di CorpTrain</h1>
+            <p class="animate__animated animate__fadeInUp animate__delay-1s">
+                Platform pembelajaran internal Weatherford yang dirancang untuk menyajikan pelatihan teknis, keselamatan, dan pengembangan kompetensi karyawan secara modern dan efisien.
+            </p>
+        </div>
+    </section>
+
+    <section id="about" class="section bg-white animate__animated animate__fadeInUp">
+        <div class="container">
+            <h2 class="text-center mb-5">Tentang CorpTrain</h2>
+            <div class="about-box">
+                <p class="text-center">
+                    CorpTrain adalah solusi pembelajaran digital internal dari Weatherford yang mengintegrasikan modul pelatihan teknis, manajemen keselamatan, dan pengembangan pribadi.
+                    Dengan tampilan modern dan fitur lengkap, CorpTrain membantu perusahaan dalam memastikan setiap karyawan memiliki akses terhadap pengetahuan dan pelatihan berkualitas tinggi
+                    sesuai dengan standar global industri energi.
+                </p>
+                <p class="text-center mt-3">
+                    Mengoptimalkan Potensi Karyawan Anda dengan Pembelajaran Berkelas Dunia. CorpTrain menyatukan teknologi teruji dengan digitalisasi canggih untuk memberikan akses
+                    berkelanjutan pada pelatihan berkualitas tinggi, memastikan kompetensi dan kesiapan menghadapi tantangan energi masa depan.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section bg-light animate__animated animate__fadeInUp">
+        <div class="container">
+            <h2 class="text-center mb-5">Fitur Unggulan</h2>
+            <div class="row text-center mt-4">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon mb-3">📁</div>
+                        <h5 class="fw-bold">Kelola Materi</h5>
+                        <p>Admin dapat menambahkan modul pelatihan berupa PDF, video, dokumen teks, serta konten multimedia lainnya.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon mb-3">📊</div>
+                        <h5 class="fw-bold">Monitoring & Evaluasi</h5>
+                        <p>Pelaporan progres pembelajaran dan evaluasi berbasis kuis serta penilaian kinerja langsung secara real-time.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon mb-3">🎓</div>
+                        <h5 class="fw-bold">Sertifikat Otomatis</h5>
+                        <p>Peserta dapat menerima sertifikat digital otomatis setelah menyelesaikan pelatihan dan evaluasi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" class="section section-bg-red animate__animated animate__fadeInUp">
+        <div class="container">
+            <h2 class="text-center">Dashboard Pelatihan</h2>
+            <p class="text-center w-75 mx-auto">
+                Platform terintegrasi untuk akses materi pelatihan, memantau perkembangan, berinteraksi dengan instruktur, dan mengunduh sertifikat.
+                Dashboard juga menyediakan pelaporan akurat untuk pemantauan HR dan manajemen.
+            </p>
+            <div class="text-center mt-4">
+                <a href="/Account/Login" class="btn btn-light btn-lg">Masuk Sekarang</a>
+
+                @if (ViewBag.Role == "Admin")
+                {
+                    <a href="/Training/Create" class="btn btn-danger btn-lg ms-2">Tambah Pelatihan</a>
+                }
+            </div>
+        </div>
+    </section>
+
+    <div class="footer-text">
+        &copy; 2025 CorpTrain - Project
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

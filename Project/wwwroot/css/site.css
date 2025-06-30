@@ -1,0 +1,892 @@
+/* ========================================= */
+/* GLOBAL & BASE STYLES */
+/* ========================================= */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/* Bootstrap Focus Styles - Keep as is for consistency */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ========================================= */
+/* FEATURE BOX STYLES (If used in other pages) */
+/* ========================================= */
+.feature-box {
+    background: #ffffff;
+    padding: 30px 20px;
+    margin-bottom: 30px;
+    border-radius: 25px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(to bottom right, #fffdfd, #f3f3f3);
+    }
+
+    .feature-box h5 {
+        font-size: 1.4rem;
+        margin-top: 15px;
+    }
+
+    .feature-box p {
+        font-size: 1.1rem;
+        color: #444;
+    }
+
+/* ========================================= */
+/* CERTIFICATION CARD HOVER (If shared across pages) */
+/* ========================================= */
+.certification-card:hover {
+    transform: translateY(-15px) scale(1.03); /* Mengangkat lebih tinggi dan sedikit membesar */
+    box-shadow: 0 25px 45px rgba(0,0,0,0.3); /* Shadow yang lebih menonjol */
+    background-color: #fff;
+    border-color: #ffeb3b; /* Highlight border on hover */
+}
+
+
+/* ========================================= */
+/* KEYFRAME ANIMATIONS - DEDUPLICATED AND CONSOLIDATED */
+/* ========================================= */
+
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* Note: Jika ada elemen yang menggunakan `pulse` dan membutuhkan `transform: translate(-50%, -50%) scale(0.8);`
+   Anda harus mendefinisikannya di class yang menggunakan animasi tersebut, bukan di keyframe `pulse` ini.
+   Definisi `pulse` ini adalah yang paling sederhana dan umum untuk opacity. */
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px); /* Memilih yang 40px dari definisi awal untuk efek yang lebih kuat */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Mengambil definisi yang lebih spesifik dengan translateY */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes textPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes expandLine {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: 80px;
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    0%, 20%, 40%, 60%, 80%, 100% {
+        transition-timing-function: cubic-bezier(0.215, .61, .355, 1);
+    }
+
+    0% {
+        opacity: 0;
+        transform: scale3d(.3, .3, .3);
+    }
+
+    20% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+
+    40% {
+        transform: scale3d(.9, .9, .9);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale3d(1.03, 1.03, 1.03);
+    }
+
+    80% {
+        transform: scale3d(.97, .97, .97);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff007f;
+    }
+
+    50% {
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 255, 255, 0.7);
+    }
+    /* Mengambil dari definisi kedua */
+    100% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff007f;
+    }
+}
+/* Note: `textGlow` memiliki dua definisi yang sedikit berbeda. Saya menggabungkannya,
+   mengambil `50%` dari definisi kedua yang memiliki `rgba` dan `text-shadow` yang berbeda.*/
+
+
+@keyframes wave {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    10% {
+        transform: rotate(14.0deg);
+    }
+
+    20% {
+        transform: rotate(-8.0deg);
+    }
+
+    30% {
+        transform: rotate(14.0deg);
+    }
+
+    40% {
+        transform: rotate(-4.0deg);
+    }
+
+    50% {
+        transform: rotate(10.0deg);
+    }
+
+    60% {
+        transform: rotate(0.0deg);
+    }
+    /* Ini untuk kembali ke 0 sebelum 100% */
+    100% {
+        transform: rotate(0.0deg);
+    }
+}
+/* Note: Menggabungkan dua definisi `wave`. Yang kedua lebih lengkap dengan 15%, 30%, dll.
+   Saya mengambil yang lebih detail untuk mempertahankan dinamika. */
+
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%); /* Memilih yang -100% karena lebih kuat dari -50px */
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes textShine {
+    0% {
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+
+    50% {
+        text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    100% {
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+}
+/* Note: `textShine` juga memiliki dua definisi. Saya memilih yang kedua karena memiliki `50%` dan efek yang lebih dinamis. */
+
+
+@keyframes subtlePulse {
+    0% {
+        /* Mengambil definisi kedua yang menggunakan background-position */
+        background-position: 0% 0%;
+        /* Jika elemen Anda sebelumnya menggunakan transform/opacity dari definisi pertama,
+           Anda perlu menambahkan properti tersebut ke selector yang menggunakannya. */
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+/* Note: `subtlePulse` memiliki dua definisi yang sangat berbeda (satu untuk `transform/opacity`, satu untuk `background-position`).
+   Berdasarkan konteks Index.cshtml yang menggunakan `background: radial-gradient(...)`,
+   definisi `background-position` lebih relevan. Jika ada elemen lain yang menggunakan `subtlePulse`
+   dan mengandalkan `transform` atau `opacity`, Anda harus membuat keyframe baru atau menerapkan properti itu di selector elemen tersebut. */
+
+
+@keyframes spinIcon {
+    from {
+        transform: rotate(0deg); /* Pilih rotate dari salah satu yang ada */
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+/* Note: `spinIcon` memiliki dua definisi yang sama persis (`rotate(0deg)` dan `rotateY(0deg)`).
+   `rotate(0deg)` lebih umum dan sudah mencakup `rotateY(0deg)` jika hanya sumbu Y yang dirotasi.
+   Saya memilih yang lebih umum. */
+
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmerCenter {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes shimmerActive { /* Ini adalah keyframe baru dari permintaan sebelumnya */
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+
+@keyframes rubberBand {
+    from {
+        transform: scale3d(1, 1, 1);
+    }
+
+    30% {
+        transform: scale3d(1.25, 0.75, 1);
+    }
+
+    40% {
+        transform: scale3d(0.75, 1.25, 1);
+    }
+
+    50% {
+        transform: scale3d(1.15, 0.85, 1);
+    }
+
+    65% {
+        transform: scale3d(.95, 1.05, 1);
+    }
+
+    75% {
+        transform: scale3d(1.05, .95, 1);
+    }
+
+    to {
+        transform: scale3d(1, 1, 1);
+    }
+}
+/* Note: `rubberBand` memiliki dua definisi. Yang kedua lebih lengkap dengan `scale3d`
+   yang memberikan efek 3D, jadi saya menggunakan itu. */
+
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* @keyframes slideInUpDelayed - Dihapus karena sama persis dengan slideInUp */
+
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 235, 59, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
+    }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes fadeInSlideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes spinAndPulse {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.2);
+        color: var(--accent-yellow); /* Pastikan --accent-yellow sudah didefinisikan sebagai variabel CSS */
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotateBg {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* NEW: Shine/Shimmer for Welcome Banner H2 */
+@keyframes shimmerText {
+    0% {
+        background-position: 0% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+
+/* ========================================= */
+/* RESPONSIVE ADJUSTMENTS - CONSOLIDATED */
+/* ========================================= */
+
+@media (max-width: 991.98px) { /* Ini akan menangani 992px ke bawah */
+    .navbar-collapse {
+        background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon)); /* Pastikan variabel ini didefinisikan */
+        border-radius: 15px;
+        margin-top: 10px;
+        padding: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .main-nav-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .nav-btn {
+        padding: 10px 18px;
+        font-size: 0.95rem;
+        margin: 5px;
+    }
+
+    .section-header h2 {
+        font-size: 2.2rem;
+    }
+
+    .training-card h3 {
+        font-size: 1.6rem;
+    }
+
+    .training-card p {
+        font-size: 0.95rem;
+    }
+
+    .certification-card h5 {
+        font-size: 1.6rem;
+    }
+
+    .certification-card p {
+        font-size: 0.95rem;
+    }
+
+    /* Login Card adjustments (from original @media (max-width: 992px)) */
+    .login-card {
+        flex-direction: column;
+        width: 500px;
+    }
+
+    .login-form, .login-side {
+        padding: 30px;
+        flex: none;
+    }
+
+        .login-form h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .login-side h3 {
+            font-size: 1.8rem;
+        }
+
+        .login-side p {
+            font-size: 1rem;
+            max-width: none;
+        }
+
+    .login-side {
+        order: -1;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .login-form {
+        border-radius: 0 0 15px 15px;
+    }
+}
+
+
+@media (max-width: 767.98px) { /* Ini akan menangani 768px ke bawah */
+    body {
+        padding-top: 80px;
+    }
+
+    .main-header {
+        padding: 10px 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .header-brand {
+        font-size: 1.5rem;
+    }
+
+    .user-greeting {
+        font-size: 0.9rem;
+    }
+
+    .main-nav-wrapper {
+        margin-top: 30px;
+        margin-bottom: 40px;
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+    .nav-btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .training-card {
+        padding: 25px;
+    }
+
+    .training-card-icon {
+        font-size: 3rem;
+    }
+
+    .training-card h3 {
+        font-size: 1.4rem;
+    }
+
+    .btn-training {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    .certification-card {
+        padding: 25px;
+    }
+
+    .cert-icon {
+        font-size: 3rem;
+    }
+
+    .certification-card h5 {
+        font-size: 1.4rem;
+    }
+
+    .btn-download {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Topbar and Main Container from original @media (max-width: 768px) */
+    .topbar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+
+        .topbar .brand {
+            font-size: 22px;
+        }
+
+        .topbar .user {
+            font-size: 16px;
+        }
+
+    .navbar-rounded {
+        margin: 20px auto;
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 15px;
+    }
+
+    .navbar-item {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .main-container {
+        padding: 20px;
+    }
+
+    .welcome-banner {
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+        .welcome-banner h2 {
+            font-size: 32px;
+        }
+
+        .welcome-banner p {
+            font-size: 16px;
+        }
+
+    .feature-card {
+        padding: 25px;
+    }
+
+    .feature-icon {
+        font-size: 40px;
+    }
+
+    .feature-card h5 {
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+
+    .section h2 {
+        font-size: 2rem;
+    }
+
+    .about-box {
+        padding: 25px;
+    }
+
+    .feature-box h5 {
+        font-size: 1.5rem;
+    }
+
+    .feature-icon {
+        font-size: 50px;
+    }
+
+    .login-form, .login-side {
+        padding: 25px;
+    }
+
+        .login-form h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+    .form-control, .btn-submit, .btn-signup {
+        font-size: 1rem;
+        padding: 12px 20px;
+    }
+}
+
+/* Keyframe Animations */
+@keyframes subtlePulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff007f;
+    }
+
+    100% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff007f;
+    }
+}
+
+@keyframes rubberBand {
+    0% {
+        transform: scale(1);
+    }
+
+    30% {
+        transform: scale(1.25);
+    }
+
+    40% {
+        transform: scale(0.75);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    65% {
+        transform: scale(.95);
+    }
+
+    75% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes wave {
+    0% {
+        transform: rotate( 0.0deg)
+    }
+
+    10% {
+        transform: rotate(14.0deg)
+    }
+
+    20% {
+        transform: rotate(-8.0deg)
+    }
+
+    30% {
+        transform: rotate(14.0deg)
+    }
+
+    40% {
+        transform: rotate(-4.0deg)
+    }
+
+    50% {
+        transform: rotate(10.0deg)
+    }
+
+    60% {
+        transform: rotate( 0.0deg)
+    }
+
+    100% {
+        transform: rotate( 0.0deg)
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes textShine {
+    0% {
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+
+    50% {
+        text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    100% {
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spinIcon {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Keyframe for Hero Section pulse */
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* Keyframe for fadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

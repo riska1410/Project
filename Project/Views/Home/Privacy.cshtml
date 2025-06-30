@@ -1,0 +1,332 @@
+﻿@{
+    ViewData["Title"] = "Privacy";
+    var username = ViewBag.UserName ?? "Admin";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    /* Global Styles - Konsisten dengan halaman lain */
+    body {
+        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+        position: relative;
+    }
+
+        /* Background Animation - Konsisten */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+    /* Topbar - Konsisten */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px); /* Frosted glass effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+            animation: textGlow 2s infinite alternate;
+        }
+    .topbar .user {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .topbar .user strong {
+            color: #ffeb3b; /* Accent color for username */
+            position: relative;
+            display: inline-block;
+            animation: rubberBand 1s forwards; /* Animation on load */
+        }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+    /* Navbar - Konsisten */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto; /* Centered and more vertical space */
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        position: relative;
+        overflow: hidden;
+    }
+
+        .navbar-item:hover {
+            background-color: #ffeb3b; /* Vibrant yellow on hover */
+            color: #d50000; /* Dark red text */
+            transform: translateY(-5px) scale(1.05); /* Lift and slight enlarge */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-item.active {
+            background-color: white;
+            color: #d50000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffeb3b; /* Highlight active state */
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+
+    /* Main Container - Konsisten */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out; /* Fade in content */
+    }
+    /* Section Title - Konsisten */
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px; /* Larger font size */
+        font-weight: bold;
+        margin-bottom: 50px; /* More space */
+        color: white;
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        animation: textPop 1s ease-out forwards; /* Pop animation */
+    }
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background-color: #ffeb3b; /* Underline accent */
+        margin: 15px auto 0;
+        border-radius: 2px;
+        animation: expandLine 1.5s ease-out forwards;
+    }
+    /* Privacy Content Box */
+    .privacy-content {
+        background: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
+        color: #333;
+        border-radius: 20px; /* More rounded */
+        padding: 40px; /* More padding */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25); /* Stronger shadow */
+        line-height: 1.8; /* Better readability */
+        font-size: 17px; /* Slightly larger text */
+        max-width: 900px; /* Max width for readability */
+        margin: 0 auto; /* Center the box */
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        animation: slideInUp 1s ease-out forwards; /* Slide in from bottom */
+        opacity: 0; /* Start hidden for animation */
+    }
+
+    .privacy-content h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        color: #d50000; /* Red color for subheadings */
+        margin-top: 25px;
+        margin-bottom: 15px;
+        font-size: 24px;
+    }
+
+        .privacy-content h3:first-of-type {
+            margin-top: 0; /* No top margin for the first subheading */
+        }
+
+    .privacy-content p {
+        margin-bottom: 20px; /* Space between paragraphs */
+    }
+
+    .privacy-content ul {
+        list-style: none; /* Remove default bullet points */
+        padding-left: 0;
+        margin-bottom: 20px;
+    }
+
+        .privacy-content ul li {
+            position: relative;
+            padding-left: 30px; /* Space for custom bullet */
+            margin-bottom: 10px;
+        }
+
+            .privacy-content ul li::before {
+                content: '\f058'; /* Font Awesome check-circle icon */
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900; /* Solid icon */
+                position: absolute;
+                left: 0;
+                top: 0;
+                color: #d50000; /* Red bullet */
+                font-size: 20px;
+            }
+
+    .privacy-content a {
+        color: #d50000; /* Red link color */
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+        .privacy-content a:hover {
+            color: #ffeb3b; /* Yellow on hover */
+            text-decoration: underline;
+        }
+
+    /* Responsive Adjustments - Konsisten */
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 15px;
+        }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .privacy-content {
+            padding: 25px;
+            font-size: 15px;
+        }
+
+            .privacy-content h3 {
+                font-size: 20px;
+            }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+</div>
+
+<div class="main-container container">
+    <div class="section-title">Kebijakan Privasi</div>
+    <div class="privacy-content">
+        <h3>Pendahuluan</h3>
+        <p>CorpTrain Weatherford sangat menghargai privasi setiap penggunanya. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, mengungkapkan, dan melindungi informasi pribadi Anda saat Anda menggunakan layanan kami.</p>
+
+        <h3>Informasi yang Kami Kumpulkan</h3>
+        <ul>
+            <li>Nama Lengkap</li>
+            <li>Alamat Email</li>
+            <li>Data Pelatihan (progres, sertifikasi yang dicapai)</li>
+            <li>Informasi perangkat dan penggunaan (melalui cookies dan teknologi serupa untuk analisis)</li>
+        </ul>
+
+        <h3>Bagaimana Kami Menggunakan Informasi Anda</h3>
+        <p>Kami menggunakan informasi yang kami kumpulkan untuk tujuan berikut:</p>
+        <ul>
+            <li>Menyediakan dan memelihara layanan pelatihan kami.</li>
+            <li>Mengelola akun pengguna Anda.</li>
+            <li>Meningkatkan pengalaman pengguna dan personalisasi konten.</li>
+            <li>Melacak progres pelatihan dan mengeluarkan sertifikasi.</li>
+            <li>Melakukan analisis data untuk memahami tren penggunaan dan efektivitas pelatihan.</li>
+            <li>Mengomunikasikan informasi penting terkait layanan atau pembaruan kebijakan.</li>
+        </ul>
+
+        <h3>Pembagian Informasi</h3>
+        <p>Kami tidak akan membagikan informasi pribadi Anda kepada pihak ketiga tanpa persetujuan eksplisit Anda, kecuali dalam situasi berikut:</p>
+        <ul>
+            <li>Untuk mematuhi kewajiban hukum yang berlaku.</li>
+            <li>Untuk melindungi hak, properti, atau keamanan CorpTrain Weatherford atau pihak lain.</li>
+            <li>Dengan penyedia layanan pihak ketiga yang bertindak atas nama kami (misalnya, penyedia hosting, analisis data), yang terikat oleh kewajiban kerahasiaan.</li>
+        </ul>
+
+        <h3>Keamanan Data</h3>
+        <p>Kami menerapkan langkah-langkah keamanan teknis, administratif, dan fisik yang wajar untuk melindungi informasi pribadi Anda dari akses, penggunaan, atau pengungkapan yang tidak sah. Meskipun kami berusaha sebaik mungkin, tidak ada metode transmisi data melalui internet atau penyimpanan elektronik yang 100% aman.</p>
+
+        <h3>Perubahan pada Kebijakan Privasi Ini</h3>
+        <p>Kami dapat memperbarui Kebijakan Privasi ini dari waktu ke waktu. Setiap perubahan akan dipublikasikan di halaman ini, dan tanggal "Terakhir Diperbarui" di bagian atas akan direvisi. Kami mendorong Anda untuk meninjau Kebijakan Privasi ini secara berkala.</p>
+
+        <h3>Hubungi Kami</h3>
+        <p>Jika Anda memiliki pertanyaan atau kekhawatiran mengenai Kebijakan Privasi ini atau praktik data kami, jangan ragu untuk menghubungi admin IT kami melalui email di <a href="mailto:it.admin@corptrain.com">it.admin@corptrain.com</a> atau telepon di +62 123 456 789.</p>
+        <p class="text-end text-muted mt-5">Terakhir Diperbarui: 26 Juni 2025</p>
+    </div>
+</div>

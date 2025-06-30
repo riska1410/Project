@@ -1,0 +1,328 @@
+﻿@{
+    ViewData["Title"] = "Training";
+    var username = ViewBag.UserName ?? "Admin";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    /* Global Styles */
+    body {
+        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+        position: relative;
+    }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+    /* Topbar */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px); /* Frosted glass effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+            animation: textGlow 2s infinite alternate;
+        }
+
+    
+    .topbar .user {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .topbar .user strong {
+            color: #ffeb3b; /* Accent color for username */
+            position: relative;
+            display: inline-block;
+            animation: rubberBand 1s forwards; /* Animation on load */
+        }
+
+    /* Navbar */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto; /* Centered and more vertical space */
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        position: relative;
+        overflow: hidden;
+    }
+
+        .navbar-item:hover {
+            background-color: #ffeb3b; /* Vibrant yellow on hover */
+            color: #d50000; /* Dark red text */
+            transform: translateY(-5px) scale(1.05); /* Lift and slight enlarge */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-item.active {
+            background-color: white;
+            color: #d50000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffeb3b; /* Highlight active state */
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+
+    /* Main Container */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out; /* Fade in content */
+    }
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px; /* Larger font size */
+        font-weight: bold;
+        margin-bottom: 50px; /* More space */
+        color: white;
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        animation: textPop 1s ease-out forwards; /* Pop animation */
+    }
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background-color: #ffeb3b; /* Underline accent */
+        margin: 15px auto 0;
+        border-radius: 2px;
+        animation: expandLine 1.5s ease-out forwards;
+    }
+
+    /* Training Cards */
+    .training-card {
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
+        color: #333;
+        border-radius: 20px; /* More rounded corners */
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow */
+        height: 100%;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth transition */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
+    }
+
+        .training-card:hover {
+            transform: translateY(-15px) rotateX(5deg); /* Lift, rotate slightly */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25); /* More pronounced shadow */
+            background-color: #fff;
+        }
+
+    .training-icon {
+        font-size: 55px; /* Larger icon */
+        color: #d50000;
+        margin-bottom: 25px; /* More space */
+        animation: bounceIn 1s ease-out; /* Icon animation */
+        transition: color 0.3s ease;
+    }
+
+    .training-card:hover .training-icon {
+        color: #ffeb3b; /* Change icon color on hover */
+    }
+    .training-card h5 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700; /* Bolder */
+        font-size: 24px; /* Larger heading */
+        margin-bottom: 15px;
+        color: #d50000;
+        letter-spacing: 0.5px;
+    }
+
+    .training-card p {
+        font-size: 16px; /* Slightly larger text */
+        color: #555;
+        line-height: 1.6;
+        flex-grow: 1; /* Make paragraphs take available space */
+    }
+
+    .btn-start {
+        background-color: #d50000;
+        color: white;
+        border: none;
+        padding: 12px 30px; /* Larger button */
+        border-radius: 30px; /* More rounded button */
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+    }
+
+        .btn-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-start:hover::before {
+            left: 100%;
+        }
+
+        .btn-start:hover {
+            background-color: #ffeb3b; /* Yellow on hover */
+            color: #d50000; /* Dark red text on hover */
+            transform: scale(1.02); /* Slight scale on hover */
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 32px;
+        }
+
+        .training-card {
+            padding: 20px;
+        }
+
+        .training-icon {
+            font-size: 45px;
+        }
+
+        .training-card h5 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<style>
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+</style>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+</div>
+
+<div class="main-container container">
+    <div class="section-title">Daftar Pelatihan Tersedia</div>
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="training-card">
+                <div class="training-icon"><i class="fas fa-cogs"></i></div>
+                <h5>Basic Safety Training</h5>
+                <p>Pelatihan keselamatan kerja dasar bagi semua karyawan baru yang bekerja di lapangan, mencakup prosedur darurat dan penggunaan alat pelindung diri.</p> <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="training-card">
+                <div class="training-icon"><i class="fas fa-bolt"></i></div>
+                <h5>Electrical Safety</h5>
+                <p>Pemahaman dasar dan praktik terbaik untuk menghindari risiko kelistrikan di lingkungan kerja, termasuk identifikasi bahaya dan prosedur penanganan aman.</p>
+                <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="training-card">
+                <div class="training-icon"><i class="fas fa-briefcase-medical"></i></div>
+                <h5>First Aid Training</h5>
+                <p>Panduan pertolongan pertama pada kecelakaan (P3K) sesuai standar industri migas, mempersiapkan Anda untuk merespon situasi darurat medis.</p>
+                <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
+            </div>
+        </div>
+    </div>
+</div>

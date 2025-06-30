@@ -1,0 +1,251 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+
+<style>
+    :root {
+        --primary-red: #d50000; /* Darker red, more elegant */
+        --secondary-red: #ff3333; /* Brighter red for accents */
+        --dark-maroon: #880e4f;
+        --accent-yellow: #ffeb3b;
+        --text-dark: #343a40;
+        --text-light: #f8f9fa;
+        --bg-light: #ffffff;
+        --bg-overall: #e9ecef; /* Lighter, subtle grey background */
+    }
+
+    body {
+        background: var(--bg-overall);
+        font-family: 'Outfit', sans-serif; /* Consistent with other pages */
+        overflow: hidden; /* Prevent scroll on initial load for background animation */
+    }
+
+        /* Background Animation - Subtle Bubbles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-maroon) 100%);
+            opacity: 0.1;
+            z-index: -1;
+            animation: gradientShift 15s ease infinite alternate; /* Slower, smoother shift */
+        }
+    /* Login Container */
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px; /* Add some padding for smaller screens */
+        box-sizing: border-box; /* Include padding in element's total width and height */
+    }
+
+    .login-card {
+        display: flex;
+        width: 900px; /* Increased width */
+        max-width: 95%; /* Responsive max-width */
+        border-radius: 20px; /* More rounded */
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); /* Stronger, softer shadow */
+        overflow: hidden;
+        background: var(--bg-light); /* Ensures a white base */
+        animation: fadeInScale 0.8s ease-out; /* Animation for the whole card */
+    }
+
+    /* Login Form Section */
+    .login-form {
+        flex: 1.2; /* Make form section slightly wider */
+        padding: 50px; /* More padding */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: var(--bg-light);
+    }
+
+        .login-form h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-bottom: 40px; /* More space below heading */
+            font-size: 2.5rem; /* Larger heading */
+            text-align: center; /* Center align heading */
+            position: relative;
+        }
+
+            .login-form h2::after {
+                content: '';
+                display: block;
+                width: 60px; /* Underline width */
+                height: 4px; /* Underline thickness */
+                background-color: var(--accent-yellow);
+                margin: 10px auto 0;
+                border-radius: 2px;
+            }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 10px; /* More rounded input fields */
+        padding: 15px 20px; /* Larger padding for inputs */
+        font-size: 1.1rem; /* Larger font in inputs */
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 0.25rem rgba(213, 0, 0, 0.25);
+            background-color: #fff;
+        }
+
+    .forgot-password-link {
+        font-size: 0.95rem;
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .forgot-password-link:hover {
+            color: var(--primary-red);
+            text-decoration: underline;
+        }
+
+    .btn-submit {
+        background-color: var(--primary-red);
+        color: white;
+        border: none;
+        border-radius: 12px; /* Slightly more rounded button */
+        padding: 15px 30px; /* Generous padding */
+        font-size: 1.2rem; /* Larger font */
+        font-weight: 600;
+        margin-top: 20px; /* Space above button */
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(213, 0, 0, 0.2);
+    }
+
+        .btn-submit:hover {
+            background-color: var(--dark-maroon);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+    .alert-danger {
+        margin-top: 20px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        text-align: center;
+        background-color: #f8d7da; /* Light red */
+        color: #721c24; /* Dark red text */
+        border-color: #f5c6cb;
+    }
+
+    /* Login Side (Right Panel) */
+    .login-side {
+        background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon)); /* Vertical gradient */
+        color: white;
+        flex: 1; /* Equal flex for balance if no additional content */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 50px;
+        text-align: center;
+        position: relative;
+        overflow: hidden; /* For pseudo-element animation */
+    }
+
+        /* Side panel background pattern */
+        .login-side::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 10%, transparent 80%), radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 5%, transparent 90%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.03) 5%, transparent 90%);
+            animation: rotateBg 30s linear infinite; /* Slow rotation */
+        }
+    .login-side .content {
+        position: relative; /* Ensure content is above pseudo-element */
+        z-index: 2;
+        animation: fadeInSlideUp 0.8s ease-out; /* Animation for side content */
+    }
+
+    .login-side h3 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.2rem; /* Larger heading */
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .login-side p {
+        font-size: 1.1rem; /* Larger paragraph */
+        line-height: 1.6;
+        max-width: 300px; /* Constrain width for better readability */
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+
+    .btn-signup {
+        border: 2px solid white;
+        color: white;
+        background: transparent;
+        padding: 12px 40px; /* Larger padding */
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+        .btn-signup:hover {
+            background-color: white;
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-form">
+            <h2>Sign in</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="Email atau Username" required />
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required />
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <small><a href="#" class="forgot-password-link">Lupa kata sandi anda?</a></small>
+                </div>
+                <button type="submit" class="btn btn-submit w-100">SIGN IN</button>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+                }
+            </form>
+        </div>
+
+        <div class="login-side">
+            <div class="content">
+                <h3>Selamat Datang!</h3> <p>
+                    Masuk untuk mengakses semua fitur pelatihan dan sertifikasi yang disediakan oleh CorpTrain.
+                    Jika Anda belum memiliki akun, daftar sekarang untuk memulai perjalanan belajar Anda!
+                </p>
+                <a href="/Account/Register" class="btn btn-signup">SIGN UP</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

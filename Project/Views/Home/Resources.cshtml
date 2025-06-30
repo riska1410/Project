@@ -1,0 +1,372 @@
+﻿@{
+    ViewData["Title"] = "Resources";
+    var username = ViewBag.UserName ?? "Admin";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    /* Global Styles - Konsisten dengan halaman lain */
+    body {
+        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+        position: relative;
+    }
+
+        /* Background Animation - Konsisten */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+    /* Topbar - Konsisten */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px); /* Frosted glass effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+            animation: textGlow 2s infinite alternate;
+        }
+    .topbar .user {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .topbar .user strong {
+            color: #ffeb3b; /* Accent color for username */
+            position: relative;
+            display: inline-block;
+            animation: rubberBand 1s forwards; /* Animation on load */
+        }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+    /* Navbar - Konsisten */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto; /* Centered and more vertical space */
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        position: relative;
+        overflow: hidden;
+    }
+
+        .navbar-item:hover {
+            background-color: #ffeb3b; /* Vibrant yellow on hover */
+            color: #d50000; /* Dark red text */
+            transform: translateY(-5px) scale(1.05); /* Lift and slight enlarge */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-item.active {
+            background-color: white;
+            color: #d50000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid #ffeb3b; /* Highlight active state */
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+
+    /* Main Container - Konsisten */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out; /* Fade in content */
+    }
+    /* Section Title - Konsisten */
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px; /* Larger font size */
+        font-weight: bold;
+        margin-bottom: 50px; /* More space */
+        color: white;
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        animation: textPop 1s ease-out forwards; /* Pop animation */
+    }
+
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background-color: #ffeb3b; /* Underline accent */
+        margin: 15px auto 0;
+        border-radius: 2px;
+        animation: expandLine 1.5s ease-out forwards;
+    }
+    /* Resource Card - Disesuaikan dari Feature/Certification Card */
+    .resource-card {
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
+        color: #333;
+        border-radius: 20px; /* More rounded corners */
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow */
+        height: 100%;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
+        animation: fadeInUp 0.8s ease-out forwards; /* Fade in and up */
+        opacity: 0; /* Start hidden for animation */
+    }
+
+        .resource-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        /* Stagger animation */
+        .resource-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .resource-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .resource-card:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+    /* For potential new cards */
+
+    .resource-card:hover {
+        transform: translateY(-15px) rotateX(5deg); /* Lift, rotate slightly */
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25); /* More pronounced shadow */
+        background-color: #fff;
+        border-color: #ffeb3b; /* Highlight border on hover */
+    }
+
+    .resource-icon {
+        font-size: 55px; /* Larger icon */
+        color: #d50000;
+        margin-bottom: 25px; /* More space */
+        transition: color 0.3s ease;
+    }
+
+    .resource-card:hover .resource-icon {
+        color: #ffeb3b; /* Change icon color on hover */
+        animation: spinIcon 0.5s ease-out; /* Spin icon on hover */
+    }
+
+    .resource-card h5 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700; /* Bolder */
+        font-size: 24px; /* Larger heading */
+        margin-bottom: 15px;
+        color: #d50000;
+        letter-spacing: 0.5px;
+    }
+
+    .resource-card p {
+        font-size: 16px; /* Slightly larger text */
+        color: #555;
+        line-height: 1.6;
+        flex-grow: 1; /* Make paragraphs take available space */
+        margin-bottom: 20px; /* Space before button/link */
+    }
+
+    .btn-view-resource {
+        background-color: #d50000;
+        color: white;
+        border: none;
+        padding: 12px 30px; /* Larger button */
+        border-radius: 30px; /* More rounded button */
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        text-decoration: none; /* Ensure it looks like a button even if it's an <a> */
+        display: inline-block; /* For proper padding and width */
+        width: 75%; /* Consistent width */
+    }
+
+        .btn-view-resource::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-view-resource:hover::before {
+            left: 100%;
+        }
+
+        .btn-view-resource:hover {
+            background-color: #ffeb3b; /* Yellow on hover */
+            color: #d50000; /* Dark red text on hover */
+            transform: scale(1.02); /* Slight scale on hover */
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+        }
+
+    /* Responsive Adjustments - Konsisten */
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 15px;
+        }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .resource-card {
+            padding: 25px;
+        }
+
+        .resource-icon {
+            font-size: 45px;
+        }
+
+        .resource-card h5 {
+            font-size: 20px;
+        }
+
+        .btn-view-resource {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+<div class="main-container container">
+    <div class="section-title">Materi & Sumber Daya Pelatihan</div>
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="resource-card">
+                <div class="resource-icon"><i class="fas fa-file-pdf"></i></div> <h5>Panduan Keselamatan Kerja</h5>
+                <p>Dokumen PDF lengkap berisi standar operasional prosedur (SOP) keselamatan kerja terbaru untuk seluruh area operasional. Sangat penting untuk dibaca dan dipahami.</p>
+                <a href="#" class="btn-view-resource mt-auto">Lihat & Unduh</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="resource-card">
+                <div class="resource-icon"><i class="fas fa-video"></i></div>
+                <h5>Video Pelatihan Interaktif</h5>
+                <p>Koleksi video tutorial dan demonstrasi praktis untuk berbagai modul pelatihan teknis dan non-teknis. Visualisasi yang jelas untuk pemahaman yang lebih baik.</p>
+                <a href="#" class="btn-view-resource mt-auto">Tonton Video</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="resource-card">
+                <div class="resource-icon"><i class="fas fa-globe"></i></div> <h5>Tautan & Referensi Eksternal</h5>
+                <p>Daftar tautan ke artikel, jurnal, dan situs web terkemuka yang relevan dengan industri dan area keahlian kami. Perkaya pengetahuan Anda dari sumber terpercaya.</p>
+                <a href="#" class="btn-view-resource mt-auto">Jelajahi Tautan</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-10">
+            <div class="resource-card">
+                <div class="resource-icon"><i class="fas fa-book"></i></div>
+                <h5>E-Book & Buku Pegangan</h5>
+                <p>Kumpulan e-book dan buku pegangan digital yang mencakup topik-topik mendalam terkait teknis, manajemen, dan pengembangan profesional.</p>
+                <a href="#" class="btn-view-resource mt-auto">Baca Sekarang</a>
+            </div>
+        </div>
+    </div>
+</div>
