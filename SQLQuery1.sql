@@ -1,2 +1,13 @@
-﻿INSERT INTO Users (Name, Email, Password)
-VALUES ('admin', 'admin@email.com', '12345');
+SELECT TOP (1000) [Id]
+      ,[Name]
+      ,[Email]
+      ,[Password]
+      ,[Role]
+  FROM [project].[dbo].[Users]
+
+
+SELECT * FROM Users;
+
+SELECT * FROM Users
+WHERE Email = 'admin@email.com'
+

@@ -1,23 +1,50 @@
-﻿@{
-    ViewData["Title"] = "Training";
+﻿@model List<Project.Models.Training>
+@{
+    ViewData["Title"] = "Training"; // Judul halaman
     var username = ViewBag.UserName ?? "Admin";
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false; // Pastikan ini diisi dari controller
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+@* PENTING: Hapus semua tag <link> di bawah ini jika Anda sudah memindahkannya ke _Layout.cshtml atau site.css.
+    Ini hanya untuk memastikan semua gaya termuat jika Anda menguji file ini secara terpisah.
+*@
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
 <style>
-    /* Global Styles */
-    body {
-        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
-        font-family: 'Montserrat', sans-serif;
-        color: white;
-        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
-        position: relative;
+    /* PENTING:
+            Semua gaya di sini (mulai dari :root sampai media queries)
+            sebaiknya dipindahkan ke file CSS eksternal Anda (misalnya site.css)
+            dan dilink di _Layout.cshtml. Ini akan mencegah duplikasi kode CSS
+            dan membuat kode View lebih bersih.
+        */
+    :root {
+        --primary-red: #d50000;
+        --dark-maroon: #880e4f;
+        --accent-yellow: #ffeb3b;
+        --light-grey: #f8f9fa;
+        --white-color: #ffffff;
+        --black-color: #000000;
+        --text-dark: #333;
+        --button-success: #4CAF50;
+        --button-danger: #ef5350;
+        --button-warning: #ffc107;
+        --button-info: #17a2b8;
     }
 
-        /* Background Animation */
+    body {
+        background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon));
+        font-family: 'Montserrat', sans-serif;
+        color: var(--white-color);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
         body::before {
             content: '';
             position: absolute;
@@ -29,42 +56,48 @@
             animation: subtlePulse 15s infinite alternate;
             z-index: -1;
         }
+
     /* Topbar */
     .topbar {
-        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        background-color: rgba(0, 0, 0, 0.3);
         padding: 15px 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        backdrop-filter: blur(5px); /* Frosted glass effect */
+        backdrop-filter: blur(5px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
         .topbar .brand {
-            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-weight: bold;
-            color: white;
+            color: var(--white-color);
             letter-spacing: 1.5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             animation: textGlow 2s infinite alternate;
         }
 
-    
-    .topbar .user {
-        font-size: 18px;
-        color: rgba(255, 255, 255, 0.9);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-        .topbar .user strong {
-            color: #ffeb3b; /* Accent color for username */
-            position: relative;
-            display: inline-block;
-            animation: rubberBand 1s forwards; /* Animation on load */
+        .topbar .user {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+            .topbar .user strong {
+                color: var(--accent-yellow);
+                position: relative;
+                display: inline-block;
+                animation: rubberBand 1s forwards;
+            }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
 
     /* Navbar */
     .navbar-rounded {
@@ -75,7 +108,7 @@
         padding: 20px;
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 50px;
-        margin: 40px auto; /* Centered and more vertical space */
+        margin: 40px auto;
         max-width: 90%;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
@@ -87,28 +120,28 @@
         border-radius: 30px;
         text-decoration: none;
         font-weight: 600;
-        color: white;
+        color: var(--white-color);
         display: flex;
         align-items: center;
         gap: 10px;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         position: relative;
         overflow: hidden;
     }
 
         .navbar-item:hover {
-            background-color: #ffeb3b; /* Vibrant yellow on hover */
-            color: #d50000; /* Dark red text */
-            transform: translateY(-5px) scale(1.05); /* Lift and slight enlarge */
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
         .navbar-item.active {
-            background-color: white;
-            color: #d50000;
+            background-color: var(--white-color);
+            color: var(--primary-red);
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            border: 2px solid #ffeb3b; /* Highlight active state */
+            border: 2px solid var(--accent-yellow);
         }
 
         .navbar-item i {
@@ -118,122 +151,309 @@
     /* Main Container */
     .main-container {
         padding: 40px;
-        animation: fadeIn 1s ease-out; /* Fade in content */
+        animation: fadeIn 1s ease-out;
+        flex-grow: 1; /* Agar konten mengisi sisa ruang */
     }
+
+    /* Section Title & Subtitle Container */
+    .section-header-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
     .section-title {
         font-family: 'Playfair Display', serif;
-        font-size: 42px; /* Larger font size */
+        font-size: 42px;
         font-weight: bold;
-        margin-bottom: 50px; /* More space */
-        color: white;
+        color: var(--white-color);
         text-align: center;
         text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
         position: relative;
-        animation: textPop 1s ease-out forwards; /* Pop animation */
-    }
-    .section-title::after {
-        content: '';
-        display: block;
-        width: 80px;
-        height: 4px;
-        background-color: #ffeb3b; /* Underline accent */
-        margin: 15px auto 0;
-        border-radius: 2px;
-        animation: expandLine 1.5s ease-out forwards;
+        animation: textPop 1s ease-out forwards;
+        margin-bottom: 15px;
     }
 
-    /* Training Cards */
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-yellow);
+            margin: 0 auto;
+            border-radius: 2px;
+            animation: expandLine 1.5s ease-out forwards;
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+    .section-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        margin-top: 25px;
+        margin-bottom: 20px;
+    }
+
+    /* Training Cards - Revamped for more animation */
     .training-card {
-        background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
-        color: #333;
-        border-radius: 20px; /* More rounded corners */
+        background-color: rgba(255, 255, 255, 0.95);
+        color: var(--text-dark);
+        border-radius: 20px;
         padding: 30px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         height: 100%;
-        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth transition */
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+        position: relative; /* Needed for pseudo-elements */
+        overflow: hidden; /* Hide overflow from glow effect */
     }
 
-        .training-card:hover {
-            transform: translateY(-15px) rotateX(5deg); /* Lift, rotate slightly */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25); /* More pronounced shadow */
-            background-color: #fff;
+    /* Stagger animation for cards */
+    .col-lg-4:nth-child(1) .training-card {
+        animation-delay: 0.2s;
+    }
+
+    .col-lg-4:nth-child(2) .training-card {
+        animation-delay: 0.4s;
+    }
+
+    .col-lg-4:nth-child(3) .training-card {
+        animation-delay: 0.6s;
+    }
+
+    .col-md-6:nth-child(1) .training-card {
+        animation-delay: 0.2s;
+    }
+
+    .col-md-6:nth-child(2) .training-card {
+        animation-delay: 0.4s;
+    }
+
+    .col-md-6:nth-child(3) .training-card {
+        animation-delay: 0.6s;
+    }
+
+    .col-md-6:nth-child(4) .training-card {
+        animation-delay: 0.8s;
+    }
+    /* Add more nth-child rules if you have more cards to stagger */
+
+    .training-card::before { /* Border glow effect on hover */
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 20px;
+        border: 3px solid transparent; /* Initial transparent border */
+        background: linear-gradient(45deg, var(--primary-red), var(--accent-yellow), var(--dark-maroon)) border-box;
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        transform: scale(0.95);
+        z-index: -1;
+    }
+
+    .training-card:hover {
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3); /* Larger, softer shadow */
+        background-color: var(--white-color);
+    }
+
+        .training-card:hover::before { /* Show and expand border glow on hover */
+            opacity: 1;
+            transform: scale(1);
         }
 
     .training-icon {
-        font-size: 55px; /* Larger icon */
-        color: #d50000;
-        margin-bottom: 25px; /* More space */
-        animation: bounceIn 1s ease-out; /* Icon animation */
-        transition: color 0.3s ease;
+        font-size: 55px;
+        color: var(--primary-red);
+        margin-bottom: 25px;
+        transition: color 0.4s ease, transform 0.4s ease; /* Smooth transition for color and transform */
     }
 
     .training-card:hover .training-icon {
-        color: #ffeb3b; /* Change icon color on hover */
+        color: var(--accent-yellow); /* Change color on hover */
+        transform: scale(1.1) rotate(10deg); /* Slightly larger and rotate on hover */
+        animation: bounceIcon 0.8s ease-in-out; /* Add a subtle bounce animation */
     }
+
     .training-card h5 {
         font-family: 'Montserrat', sans-serif;
-        font-weight: 700; /* Bolder */
-        font-size: 24px; /* Larger heading */
+        font-weight: 800; /* Made bolder */
+        font-size: 26px; /* Slightly larger */
         margin-bottom: 15px;
-        color: #d50000;
-        letter-spacing: 0.5px;
+        color: var(--dark-maroon);
+        letter-spacing: 0.7px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
     .training-card p {
-        font-size: 16px; /* Slightly larger text */
+        font-size: 16px;
         color: #555;
         line-height: 1.6;
-        flex-grow: 1; /* Make paragraphs take available space */
+        flex-grow: 1;
+        margin-bottom: 20px;
     }
 
-    .btn-start {
-        background-color: #d50000;
-        color: white;
+    /* Button styles */
+    .btn-action-main, .btn-action-alt, .btn-danger-custom {
         border: none;
-        padding: 12px 30px; /* Larger button */
-        border-radius: 30px; /* More rounded button */
+        padding: 12px 25px;
+        border-radius: 30px;
         font-weight: 600;
         letter-spacing: 0.8px;
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
         z-index: 1;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
     }
 
-        .btn-start::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: all 0.5s ease;
-            z-index: -1;
-        }
+    .btn-action-main {
+        background-color: var(--primary-red);
+        color: white;
+    }
 
-        .btn-start:hover::before {
-            left: 100%;
-        }
-
-        .btn-start:hover {
-            background-color: #ffeb3b; /* Yellow on hover */
-            color: #d50000; /* Dark red text on hover */
-            transform: scale(1.02); /* Slight scale on hover */
+        .btn-action-main:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: scale(1.02);
             box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
         }
 
+    .btn-action-alt {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--text-dark);
+        border: 1px solid #ccc;
+    }
+
+        .btn-action-alt:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--primary-red);
+            border-color: var(--primary-red);
+            transform: scale(1.02);
+        }
+
+    .btn-danger-custom {
+        background-color: var(--button-danger);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger-custom:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+        }
+
+    .btn-create-training {
+        background-color: var(--accent-yellow);
+        color: var(--primary-red);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(255, 235, 59, 0.3);
+    }
+
+        .btn-create-training:hover {
+            background-color: var(--white-color);
+            color: var(--dark-maroon);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-create-training i {
+            font-size: 1.2em;
+        }
+
+    .alert-custom {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: var(--text-dark);
+        border: 1px solid var(--accent-yellow);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-top: 40px;
+    }
+
+        .alert-custom i {
+            font-size: 40px;
+            color: var(--accent-yellow);
+            margin-bottom: 15px;
+        }
+
+    /* Keyframe Animations */
+    
     /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .section-title {
+            font-size: 38px;
+        }
+
+        .training-card h5 {
+            font-size: 22px;
+        }
+
+        .training-icon {
+            font-size: 50px;
+        }
+
+        .btn-create-training {
+            padding: 10px 25px;
+            font-size: 0.9em;
+        }
+    }
+
     @@media (max-width: 768px) {
         .topbar {
             flex-direction: column;
             gap: 10px;
+            padding: 10px 15px;
         }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
 
         .navbar-rounded {
             margin: 20px auto;
@@ -247,12 +467,33 @@
             justify-content: center;
         }
 
+        .main-container {
+            padding: 20px;
+        }
+
         .section-title {
             font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+            .section-title::after {
+                bottom: -10px;
+            }
+
+        .section-subtitle {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .btn-create-training {
+            padding: 8px 20px;
+            margin-top: 20px;
+            font-size: 0.85em;
         }
 
         .training-card {
-            padding: 20px;
+            padding: 25px;
         }
 
         .training-icon {
@@ -262,6 +503,25 @@
         .training-card h5 {
             font-size: 20px;
         }
+
+        .btn-action-main, .btn-action-alt, .btn-danger-custom {
+            padding: 10px 20px;
+            font-size: 0.9em;
+            gap: 5px;
+        }
+        /* Make action buttons stack on small screens */
+        .training-card .d-grid.gap-2.mt-3.w-100,
+        .training-card .d-flex.justify-content-center.gap-2.mt-2 {
+            flex-direction: column;
+            gap: 8px;
+            width: auto; /* Let content dictate width */
+            align-items: stretch; /* Stretch buttons to full width */
+        }
+
+            .training-card .d-flex.justify-content-center.gap-2.mt-2 .btn-action-alt,
+            .training-card .d-flex.justify-content-center.gap-2.mt-2 .btn-danger-custom {
+                width: 100%; /* Ensure edit/delete buttons also stretch */
+            }
     }
 </style>
 
@@ -269,14 +529,6 @@
     <div class="brand">CorpTrain Weatherford</div>
     <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
 </div>
-
-<style>
-    .wave-animation {
-        animation: wave 2s infinite;
-        transform-origin: 70% 70%;
-        display: inline-block;
-    }
-</style>
 
 <div class="navbar-rounded">
     <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
@@ -288,7 +540,7 @@
     <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
         <i class="fas fa-award"></i> Certification
     </a>
-    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Resource" asp-action="Index">
         <i class="fas fa-folder-open"></i> Resources
     </a>
     <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
@@ -296,33 +548,67 @@
     </a>
 </div>
 
+<div class="main-container container text-center">
+    <div class="section-header-container">
+        <h2 class="section-title">Program Pelatihan</h2>
+        <p class="section-subtitle">Jelajahi berbagai program pelatihan yang tersedia untuk meningkatkan kompetensi Anda.</p>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" asp-controller="Training" class="btn btn-create-training animate__animated animate__fadeInUp">
+                <i class="fas fa-plus-circle"></i> Tambah Pelatihan Baru
+            </a>
+        }
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert-custom animate__animated animate__fadeInUp">
+            <i class="fas fa-exclamation-circle mb-3"></i>
+            <p>Belum ada program pelatihan yang tersedia saat ini.</p>
+            @if (isAdmin)
+            {
+                <p class="text-secondary">Anda bisa menambahkan pelatihan baru.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 justify-content-center">
+            @foreach (var training in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-10">
+                    <div class="training-card">
+                        <div class="training-icon">
+                            <i class="@(string.IsNullOrEmpty(training.IconClass) ? "fas fa-book" : training.IconClass)"></i>
+                        </div>
+                        <h5>@training.Title</h5>
+                        <p>@(training.Description?.Length > 120 ? training.Description.Substring(0, 120) + "..." : training.Description)</p>
+
+                        <div class="d-grid gap-2 mt-3 w-100">
+                            <a class="btn btn-action-main" asp-controller="Training" asp-action="Detail" asp-route-id="@training.Id">
+                                <i class="fas fa-arrow-right"></i> Ikuti Pelatihan
+                            </a>
+
+                            @if (isAdmin)
+                            {
+                                <div class="d-flex justify-content-center gap-2 mt-2">
+                                    <a class="btn btn-action-alt btn-sm" asp-action="Edit" asp-controller="Training" asp-route-id="@training.Id">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form asp-action="Delete" asp-controller="Training" asp-route-id="@training.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger-custom btn-sm" onclick="return confirm('Yakin ingin hapus pelatihan ini?')">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
 
-<div class="main-container container">
-    <div class="section-title">Daftar Pelatihan Tersedia</div>
-    <div class="row g-4 justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="training-card">
-                <div class="training-icon"><i class="fas fa-cogs"></i></div>
-                <h5>Basic Safety Training</h5>
-                <p>Pelatihan keselamatan kerja dasar bagi semua karyawan baru yang bekerja di lapangan, mencakup prosedur darurat dan penggunaan alat pelindung diri.</p> <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="training-card">
-                <div class="training-icon"><i class="fas fa-bolt"></i></div>
-                <h5>Electrical Safety</h5>
-                <p>Pemahaman dasar dan praktik terbaik untuk menghindari risiko kelistrikan di lingkungan kerja, termasuk identifikasi bahaya dan prosedur penanganan aman.</p>
-                <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="training-card">
-                <div class="training-icon"><i class="fas fa-briefcase-medical"></i></div>
-                <h5>First Aid Training</h5>
-                <p>Panduan pertolongan pertama pada kecelakaan (P3K) sesuai standar industri migas, mempersiapkan Anda untuk merespon situasi darurat medis.</p>
-                <button class="btn btn-start mt-4 w-75">Ikuti Pelatihan</button>
-            </div>
-        </div>
-    </div>
-</div>
+@* Scripts (Jika ada, tempatkan di akhir body atau di _Layout.cshtml) *@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

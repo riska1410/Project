@@ -1,21 +1,24 @@
-﻿@model Project.Models.Training
+﻿@model Project.Models.Resource
 @{
-    ViewData["Title"] = "Edit Training";
-    var username = ViewBag.UserName ?? "Admin"; // Untuk konsistensi topbar & navbar
-    var role = ViewBag.Role ?? "user";
-    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+    ViewData["Title"] = "Edit Sumber Daya"; // Ubah untuk konsistensi penamaan judul
+    var username = ViewBag.UserName ?? "Admin";
 }
 
-@* Links untuk Font dan Bootstrap di _Layout.cshtml atau shared partial *@
+@* PENTING: Hapus semua tag <link> di bawah ini jika Anda sudah memindahkannya ke _Layout.cshtml atau site.css.
+    Ini hanya untuk memastikan semua gaya termuat jika Anda menguji file ini secara terpisah.
+*@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
-@* Semua gaya CSS yang sama dari Index.cshtml harus disertakan di sini,
-   atau lebih baik lagi, pindahkan ke file CSS terpisah yang di-link di _Layout.cshtml *@
 <style>
-    /* Global Styles (bisa dipindahkan ke file CSS terpisah jika banyak halaman pakai gaya sama) */
+    /* PENTING:
+            Semua gaya di sini (mulai dari :root sampai media queries)
+            sebaiknya dipindahkan ke file CSS eksternal Anda (misalnya site.css)
+            dan dilink di _Layout.cshtml. Ini akan mencegah duplikasi kode CSS
+            dan membuat kode View lebih bersih.
+        */
     :root {
         --primary-red: #d50000;
         --dark-maroon: #880e4f;
@@ -26,7 +29,8 @@
         --text-dark: #333;
         --button-success: #4CAF50;
         --button-danger: #ef5350;
-        --button-warning: #ffeb3b;
+        --button-warning: #ffc107;
+        --button-info: #17a2b8;
     }
 
     body {
@@ -147,81 +151,126 @@
     .main-container {
         padding: 40px;
         animation: fadeIn 1s ease-out;
-        flex-grow: 1;
+        flex-grow: 1; /* Agar konten mengisi sisa ruang */
     }
 
-    /* Form Styles (Tambah & Edit) */
-    .form-container-card {
-        background-color: rgba(255, 255, 255, 0.95);
-        color: var(--text-dark);
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        margin: 50px auto;
-        max-width: 800px;
-        animation: fadeIn 0.8s ease-out;
+    /* Section Title & Subtitle Container */
+    .section-header-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 50px;
+        position: relative;
     }
 
-        .form-container-card h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-red);
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px;
+        font-weight: bold;
+        color: var(--white-color);
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        animation: textPop 1s ease-out forwards;
+        margin-bottom: 15px; /* Sesuaikan jarak dengan subtitle */
+    }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-yellow);
+            margin: 0 auto;
+            border-radius: 2px;
+            animation: expandLine 1.5s ease-out forwards;
+            position: absolute; /* Untuk menempatkan di bawah title */
+            bottom: -15px; /* Jarak dari title */
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-            .form-container-card h2::after {
-                content: '';
-                display: block;
-                width: 60px;
-                height: 3px;
-                background-color: var(--accent-yellow);
-                margin: 10px auto 0;
-                border-radius: 2px;
-            }
+    .section-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        margin-top: 25px; /* Jarak dari title/garis */
+        margin-bottom: 20px;
+    }
 
-    .form-group label {
-        font-weight: 600;
-        color: #555;
+    /* Form Container Card */
+    .form-container-card {
+        background-color: var(--white-color);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        max-width: 700px; /* Lebar maksimum form */
+        margin: 0 auto; /* Tengah secara horizontal */
+        color: var(--text-dark);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.5s ease;
+        animation: fadeInScale 0.8s ease-out forwards;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+        .form-container-card:hover {
+            transform: scale(1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+    /* Form Labels & Controls */
+    .form-label {
+        font-weight: 700;
+        color: var(--dark-maroon);
         margin-bottom: 8px;
-        display: block;
+        display: block; /* Ensures label takes full width */
     }
 
     .form-control {
+        border: 1px solid #ddd;
         border-radius: 10px;
         padding: 12px 15px;
-        border: 1px solid #ddd;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        font-size: 16px;
+        width: 100%;
+        transition: all 0.3s ease;
+        background-color: #f0f0f0;
+        color: var(--text-dark);
     }
 
         .form-control:focus {
             border-color: var(--primary-red);
             box-shadow: 0 0 0 0.25rem rgba(213, 0, 0, 0.25);
+            background-color: var(--white-color);
+            transform: translateY(-2px);
         }
 
-    textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
-    }
+        .form-control::placeholder {
+            color: #999;
+        }
 
     .text-danger {
-        font-size: 0.9em;
+        font-size: 0.85em;
         margin-top: 5px;
         display: block;
     }
 
-    /* Button styles (Consistent with previous theme) */
-    .btn-action, .btn-main {
-        background-color: var(--primary-red);
-        color: white;
+    /* Form Actions (Buttons) */
+    .form-actions {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        gap: 20px; /* Jarak antar tombol */
+        flex-wrap: wrap; /* Untuk responsivitas */
+    }
+
+    .btn-action-primary,
+    .btn-action-secondary {
         border: none;
-        padding: 10px 25px;
+        padding: 12px 30px;
         border-radius: 30px;
-        font-weight: 600;
-        letter-spacing: 0.8px;
+        font-weight: 700;
+        letter-spacing: 1px;
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
@@ -230,75 +279,46 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 5px;
+        gap: 10px;
         cursor: pointer;
+        min-width: 150px; /* Memberikan lebar minimum agar konsisten */
     }
 
-        .btn-action::before, .btn-main::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: all 0.5s ease;
-            z-index: -1;
+    .btn-action-primary { /* Simpan */
+        background-color: var(--primary-red);
+        color: var(--white-color);
+        box-shadow: 0 5px 15px rgba(213, 0, 0, 0.3);
+    }
+
+        .btn-action-primary:hover {
+            background-color: var(--dark-maroon);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(136, 14, 79, 0.4);
         }
 
-        .btn-action:hover::before, .btn-main:hover::before {
-            left: 100%;
-        }
+    .btn-action-secondary { /* Batal/Kembali */
+        background-color: var(--light-grey);
+        color: var(--text-dark);
+        border: 1px solid #ccc;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
 
-        .btn-action:hover, .btn-main:hover {
+        .btn-action-secondary:hover {
             background-color: var(--accent-yellow);
             color: var(--primary-red);
-            transform: scale(1.02);
+            border-color: var(--accent-yellow);
+            transform: translateY(-3px) scale(1.02);
             box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
         }
-
-    /* Specific button colors for CRUD and main buttons */
-    .btn-primary-custom { /* Simpan (form) */
-        background-color: var(--primary-red);
-        border-color: var(--primary-red);
-        color: var(--white-color);
-    }
-
-        .btn-primary-custom:hover {
-            background-color: var(--accent-yellow);
-            border-color: var(--accent-yellow);
-            color: var(--primary-red) !important;
-        }
-
-    .btn-secondary-custom { /* Batal / Kembali */
-        background-color: rgba(255, 255, 255, 0.2);
-        color: var(--white-color);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 10px 25px;
-        border-radius: 30px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-    }
-
-        .btn-secondary-custom:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            border-color: var(--accent-yellow);
-            color: var(--accent-yellow);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-
     /* Responsive Adjustments */
     @@media (max-width: 992px) {
+        .section-title {
+            font-size: 38px;
+        }
+
         .form-container-card {
             padding: 30px;
-            margin: 30px auto;
+            max-width: 90%;
         }
     }
 
@@ -333,13 +353,45 @@
             padding: 20px;
         }
 
-        .form-container-card {
-            padding: 20px;
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 10px;
         }
 
-            .form-container-card h2 {
-                font-size: 28px;
+            .section-title::after {
+                bottom: -10px;
             }
+
+        .section-subtitle {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-container-card {
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .form-label {
+            font-size: 0.95em;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            font-size: 15px;
+        }
+
+        .form-actions {
+            flex-direction: column; /* Tombol menumpuk */
+            gap: 15px;
+        }
+
+        .btn-action-primary, .btn-action-secondary {
+            width: 100%; /* Tombol memenuhi lebar */
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
     }
 </style>
 
@@ -358,7 +410,7 @@
     <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
         <i class="fas fa-award"></i> Certification
     </a>
-    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Resource" asp-action="Index">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" || ViewData["Title"].ToString() == "Edit Sumber Daya" ? "active" : "")" asp-controller="Resource" asp-action="Index">
         <i class="fas fa-folder-open"></i> Resources
     </a>
     <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
@@ -366,35 +418,37 @@
     </a>
 </div>
 
-<div class="main-container container">
+<div class="main-container container text-center">
+    <div class="section-header-container">
+        <h2 class="section-title">Edit Sumber Daya</h2>
+        <p class="section-subtitle">Perbarui detail sumber daya pelatihan ini.</p>
+    </div>
+
     <div class="form-container-card animate__animated animate__fadeInUp">
-        <h2>Edit Pelatihan</h2>
-
         <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="Id" />
-
-            <div class="mb-3">
-                <label asp-for="Title" class="form-label">Judul Pelatihan</label>
-                <input asp-for="Title" class="form-control" />
+            <input type="hidden" asp-for="Id" /> @* Menggunakan asp-for untuk input hidden *@
+            <div class="mb-4 text-start">
+                <label for="Title" class="form-label">Judul</label>
+                <input type="text" asp-for="Title" class="form-control" required /> @* Menggunakan asp-for untuk binding data *@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label">Deskripsi</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
+            <div class="mb-4 text-start">
+                <label for="Description" class="form-label">Deskripsi</label>
+                <textarea asp-for="Description" class="form-control" rows="4" required></textarea> @* Menggunakan asp-for *@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="IconClass" class="form-label">Icon (Contoh: fas fa-code, fas fa-book-open)</label>
-                <input asp-for="IconClass" class="form-control" />
-                <small class="form-text text-muted">Gunakan kelas icon dari Font Awesome, cth: `fas fa-laptop`.</small>
+            <div class="mb-4 text-start">
+                <label for="VideoUrl" class="form-label">Link Video</label>
+                <input type="url" asp-for="VideoUrl" class="form-control" placeholder="Contoh: http://youtube.com/watch?v=..." required /> @* Menggunakan asp-for *@
+                <span asp-validation-for="VideoUrl" class="text-danger"></span>
             </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <button type="submit" class="btn btn-primary-custom btn-main"><i class="fas fa-save"></i> Simpan Perubahan</button>
-                <a asp-action="Training" asp-controller="Home" class="btn btn-secondary-custom"><i class="fas fa-times-circle"></i> Batal</a>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-action-primary">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+                <a asp-action="Index" class="btn btn-action-secondary">
+                    <i class="fas fa-arrow-alt-circle-left"></i> Kembali ke Sumber Daya
+                </a>
             </div>
         </form>
     </div>
@@ -405,3 +459,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+@* Scripts (Jika ada, tempatkan di akhir body atau di _Layout.cshtml) *@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

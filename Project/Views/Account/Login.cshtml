@@ -144,11 +144,11 @@
         border-color: #f5c6cb;
     }
 
-    /* Login Side (Right Panel) */
+    /* Login Side (Right Panel) - Adjusted for Login focus */
     .login-side {
         background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon)); /* Vertical gradient */
         color: white;
-        flex: 1; /* Equal flex for balance if no additional content */
+        flex: 1; /* Equal flex for balance */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -188,28 +188,14 @@
         font-size: 1.1rem; /* Larger paragraph */
         line-height: 1.6;
         max-width: 300px; /* Constrain width for better readability */
-        margin-bottom: 30px;
+        margin-bottom: 30px; /* Increased margin */
         opacity: 0.9;
     }
 
-    .btn-signup {
-        border: 2px solid white;
-        color: white;
-        background: transparent;
-        padding: 12px 40px; /* Larger padding */
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    /* Remove the .btn-signup as requested */
+    .login-side .btn-signup {
+        display: none; /* Hide the signup button */
     }
-
-        .btn-signup:hover {
-            background-color: white;
-            color: var(--primary-red);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
 
 </style>
 
@@ -219,13 +205,13 @@
             <h2>Sign in</h2>
             <form method="post">
                 <div class="mb-3">
-                    <input type="text" name="name" class="form-control" placeholder="Email atau Username" required />
+                    <input type="email" name="email" class="form-control" placeholder="Email" required />
                 </div>
                 <div class="mb-3">
                     <input type="password" name="password" class="form-control" placeholder="Password" required />
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <small><a href="#" class="forgot-password-link">Lupa kata sandi anda?</a></small>
+                    <small><a href="#" class="forgot-password-link">Lupa kata sandi Anda?</a></small>
                 </div>
                 <button type="submit" class="btn btn-submit w-100">SIGN IN</button>
 
@@ -238,11 +224,10 @@
 
         <div class="login-side">
             <div class="content">
-                <h3>Selamat Datang!</h3> <p>
-                    Masuk untuk mengakses semua fitur pelatihan dan sertifikasi yang disediakan oleh CorpTrain.
-                    Jika Anda belum memiliki akun, daftar sekarang untuk memulai perjalanan belajar Anda!
+                <h3>Selamat Datang Kembali!</h3>
+                <p>
+                    Silakan masuk untuk melanjutkan akses ke semua fitur pelatihan dan sertifikasi eksklusif yang ditawarkan oleh CorpTrain. Kami senang Anda kembali!
                 </p>
-                <a href="/Account/Register" class="btn btn-signup">SIGN UP</a>
             </div>
         </div>
     </div>

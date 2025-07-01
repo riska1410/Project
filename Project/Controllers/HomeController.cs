@@ -1,18 +1,21 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Project.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Project.Data;
+using Project.Models;
+using System.Diagnostics;
 
 namespace Project.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -21,10 +24,12 @@ namespace Project.Controllers
             if (!string.IsNullOrEmpty(userId))
             {
                 var user = _context.Users.Find(int.Parse(userId));
-                ViewBag.UserName = user?.Name ?? "Admin";
-                ViewBag.Role = user?.Role ?? "Admin";
+                ViewBag.UserName = user?.Name ?? "admin";
+                ViewBag.Role = user?.Role ?? "admin";
             }
-            return View();
+
+            var trainings = _context.Trainings.ToList(); 
+            return View(trainings); 
         }
 
         public IActionResult Privacy()
@@ -33,8 +38,8 @@ namespace Project.Controllers
             if (!string.IsNullOrEmpty(userId))
             {
                 var user = _context.Users.Find(int.Parse(userId));
-                ViewBag.UserName = user?.Name ?? "Admin";
-                ViewBag.Role = user?.Role ?? "Admin";
+                ViewBag.UserName = user?.Name ?? "admin";
+                ViewBag.Role = user?.Role ?? "admin";
             }
             return View();
         }
@@ -48,65 +53,55 @@ namespace Project.Controllers
         public IActionResult Dashboard()
         {
             var userId = HttpContext.Session.GetString("UserId");
-
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var user = _context.Users.Find(int.Parse(userId));
             ViewBag.UserName = user?.Name;
             ViewBag.Role = user?.Role;
 
-            return View();
+            var trainings = _context.Trainings.ToList() ?? new List<Training>();
+            return View(trainings); // ke Views/Home/Dashboard.cshtml
         }
 
         public IActionResult Training()
         {
-            var userId = HttpContext.Session.GetString("UserId");
+            var role = HttpContext.Session.GetString("UserRole");
+            ViewBag.IsAdmin = (role == "admin");
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var user = _context.Users.Find(int.Parse(userId));
-            ViewBag.UserName = user?.Name ?? "Admin";
-            ViewBag.Role = user?.Role ?? "Admin";
-
-            return View();
+            var trainings = _context.Trainings.ToList() ?? new List<Training>();
+            return View(trainings); // ke Views/Home/Training.cshtml
         }
 
         public IActionResult Certification()
         {
-            var userId = HttpContext.Session.GetString("UserId");
+            var role = HttpContext.Session.GetString("UserRole");
+            bool isAdmin = role == "admin";
 
-            if (string.IsNullOrEmpty(userId))
+            ViewBag.UserName = HttpContext.Session.GetString("UserName");
+
+            var model = new CertificationViewModel
             {
-                return RedirectToAction("Login", "Account");
-            }
+                Trainings = _context.Trainings.ToList() ?? new List<Training>(),
+                Certifications = _context.Certifications.Include(c => c.Training).ToList() ?? new List<Certification>(),
+                IsAdmin = isAdmin
+            };
 
-            var user = _context.Users.Find(int.Parse(userId));
-            ViewBag.UserName = user?.Name;
-            ViewBag.Role = user?.Role;
-
-            return View();
+            return View("Certification", model); // ke Views/Home/Certification.cshtml
         }
 
         public IActionResult Resources()
         {
             var userId = HttpContext.Session.GetString("UserId");
-
             if (string.IsNullOrEmpty(userId))
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
             var user = _context.Users.Find(int.Parse(userId));
             ViewBag.UserName = user?.Name;
             ViewBag.Role = user?.Role;
 
-            return View();
+            var resources = _context.Resources.ToList() ?? new List<Resource>();
+            return View(resources); // ke Views/Home/Resources.cshtml
         }
     }
 }

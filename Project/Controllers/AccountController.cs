@@ -17,24 +17,23 @@ namespace Project.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View(); // Menampilkan halaman form login
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Login(string name, string password)
+        public IActionResult Login(string email, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Name == name && u.Password == password);
+            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
 
             if (user != null)
             {
-                // Simpan ID ke session
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
-
-                // Redirect ke halaman dashboard
+                HttpContext.Session.SetString("UserName", user.Name);
+                HttpContext.Session.SetString("UserRole", user.Role?.ToLower() ?? "employee");
                 return RedirectToAction("Dashboard", "Home");
             }
 
-            ViewBag.Error = "Nama atau Password salah";
+            ViewBag.Error = "Email atau password salah";
             return View();
         }
 

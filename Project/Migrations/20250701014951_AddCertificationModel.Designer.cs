@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.Data;
 
@@ -10,9 +11,11 @@ using Project.Data;
 namespace Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701014951_AddCertificationModel")]
+    partial class AddCertificationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,34 +41,10 @@ namespace Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrainingId");
+                    b.HasIndex("TrainingId")
+                        .IsUnique();
 
                     b.ToTable("Certifications");
-                });
-
-            modelBuilder.Entity("Project.Models.Resource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Resources");
                 });
 
             modelBuilder.Entity("Project.Models.Training", b =>
@@ -125,8 +104,8 @@ namespace Project.Migrations
             modelBuilder.Entity("Project.Models.Certification", b =>
                 {
                     b.HasOne("Project.Models.Training", "Training")
-                        .WithMany("Certifications")
-                        .HasForeignKey("TrainingId")
+                        .WithOne("Certification")
+                        .HasForeignKey("Project.Models.Certification", "TrainingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -135,7 +114,7 @@ namespace Project.Migrations
 
             modelBuilder.Entity("Project.Models.Training", b =>
                 {
-                    b.Navigation("Certifications");
+                    b.Navigation("Certification");
                 });
 #pragma warning restore 612, 618
         }

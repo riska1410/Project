@@ -1,18 +1,9 @@
-﻿@model IEnumerable<Project.Models.Training>
+﻿@model List<Project.Models.Training>
+
 @{
     ViewData["Title"] = "Training";
     var isAdmin = ViewBag.IsAdmin as bool? ?? false;
 }
-@{
-    var user = Context.Session.GetString("UserName");
-    var role = Context.Session.GetString("UserRole");
-}
-
-@if (role == "admin")
-{
-    <a asp-action="Create" class="btn btn-primary">Tambah Training</a>
-}
-
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -31,7 +22,7 @@
             <tr>
                 <th>Judul</th>
                 <th>Deskripsi</th>
-                <th>Durasi</th>
+                <th>Icon</th>
                 @if (isAdmin)
                 {
                     <th>Aksi</th>
@@ -44,11 +35,18 @@
                 <tr>
                     <td>@training.Title</td>
                     <td>@training.Description</td>
+                    <td><i class="@training.IconClass"></i></td>
                     @if (isAdmin)
                     {
                         <td>
-                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@training.Id"><i class="fas fa-edit"></i></a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@training.Id" onclick="return confirm('Yakin ingin menghapus?')"><i class="fas fa-trash"></i></a>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@training.Id">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@training.Id"
+                               onclick="return confirm('Yakin ingin menghapus?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
                         </td>
                     }
                 </tr>

@@ -1,25 +1,416 @@
 ﻿@model Project.Models.Training
 @{
     ViewData["Title"] = "Tambah Training";
+    var username = ViewBag.UserName ?? "Admin"; // Untuk konsistensi topbar & navbar
+    var role = ViewBag.Role ?? "user";
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Tambah Training Baru</h2>
+@* Links untuk Font dan Bootstrap di _Layout.cshtml atau shared partial *@
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="Title" class="form-label"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
+@* Semua gaya CSS yang sama dari Index.cshtml harus disertakan di sini,
+   atau lebih baik lagi, pindahkan ke file CSS terpisah yang di-link di _Layout.cshtml *@
+<style>
+    /* Global Styles (bisa dipindahkan ke file CSS terpisah jika banyak halaman pakai gaya sama) */
+    :root {
+        --primary-red: #d50000;
+        --dark-maroon: #880e4f;
+        --accent-yellow: #ffeb3b;
+        --light-grey: #f8f9fa;
+        --white-color: #ffffff;
+        --black-color: #000000;
+        --text-dark: #333;
+        --button-success: #4CAF50;
+        --button-danger: #ef5350;
+        --button-warning: #ffeb3b;
+    }
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+    body {
+        background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon));
+        font-family: 'Montserrat', sans-serif;
+        color: var(--white-color);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        <button type="submit" class="btn btn-danger">Simpan</button>
-        <a asp-action="Index" class="btn btn-secondary">Kembali</a>
-    </form>
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+
+    /* Topbar */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--white-color);
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: textGlow 2s infinite alternate;
+        }
+
+        .topbar .user {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .topbar .user strong {
+                color: var(--accent-yellow);
+                position: relative;
+                display: inline-block;
+                animation: rubberBand 1s forwards;
+            }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+
+    /* Navbar */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto;
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: var(--white-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .navbar-item:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-item.active {
+            background-color: var(--white-color);
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--accent-yellow);
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+
+    /* Main Container */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out;
+        flex-grow: 1;
+    }
+
+    /* Form Styles (Tambah & Edit) */
+    .form-container-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        color: var(--text-dark);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin: 50px auto;
+        max-width: 800px;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+        .form-container-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-red);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+            .form-container-card h2::after {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 3px;
+                background-color: var(--accent-yellow);
+                margin: 10px auto 0;
+                border-radius: 2px;
+            }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 0.25rem rgba(213, 0, 0, 0.25);
+        }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .text-danger {
+        font-size: 0.9em;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* Button styles (Consistent with previous theme) */
+    .btn-action, .btn-main {
+        background-color: var(--primary-red);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+        .btn-action::before, .btn-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-action:hover::before, .btn-main:hover::before {
+            left: 100%;
+        }
+
+        .btn-action:hover, .btn-main:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+        }
+
+    /* Specific button colors for CRUD and main buttons */
+    .btn-primary-custom { /* Simpan (form) */
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
+        color: var(--white-color);
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--accent-yellow);
+            border-color: var(--accent-yellow);
+            color: var(--primary-red) !important;
+        }
+
+    .btn-secondary-custom { /* Batal / Kembali */
+        background-color: rgba(255, 255, 255, 0.2);
+        color: var(--white-color);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+        .btn-secondary-custom:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+
+
+    /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .form-container-card {
+            padding: 30px;
+            margin: 30px auto;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 15px;
+        }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .form-container-card {
+            padding: 20px;
+        }
+
+            .form-container-card h2 {
+                font-size: 28px;
+            }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
 </div>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Resource" asp-action="Index">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+<div class="main-container container">
+    <div class="form-container-card animate__animated animate__fadeInUp">
+        <h2>Tambah Pelatihan Baru</h2>
+
+        @if (ViewBag.Errors != null)
+        {
+            <div class="alert alert-danger animate__animated animate__shakeX">
+                <ul class="mb-0">
+                    @foreach (var error in ViewBag.Errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Judul Pelatihan</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Deskripsi</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IconClass" class="form-label">Icon (Contoh: fas fa-code, fas fa-book-open)</label>
+                <input asp-for="IconClass" class="form-control" />
+                <small class="form-text text-muted">Gunakan kelas icon dari Font Awesome, cth: `fas fa-laptop`.</small>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-primary-custom btn-main"><i class="fas fa-save"></i> Simpan</button>
+                <a asp-action="Training" asp-controller="Home" class="btn btn-secondary-custom"><i class="fas fa-times-circle"></i> Batal</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

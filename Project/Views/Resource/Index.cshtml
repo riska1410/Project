@@ -1,0 +1,85 @@
+﻿@model List<Project.Models.Resource>
+@{
+    ViewData["Title"] = "Kelola Resource";
+    var username = ViewBag.UserName ?? "Admin";
+    var isAdminPage = true; // Indikator jika perlu logic admin di view (saat ini tidak dipakai langsung di view)
+}
+
+@* Jika CSS global di _Layout, baris ini bisa dihapus dari sini *@
+@* <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" /> *@
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" || ViewData["Title"].ToString() == "Kelola Resource" || ViewData["Title"].ToString() == "Tambah Resource" || ViewData["Title"].ToString() == "Edit Resource" ? "active" : "")" asp-controller="Resource" asp-action="Index">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+<div class="main-container container text-center">
+    <h2 class="section-title">Kelola Materi & Sumber Daya Pelatihan</h2>
+
+    <a asp-controller="Resource" asp-action="Create" class="btn btn-create-resource animate__animated animate__fadeInUp">
+        <i class="fas fa-plus-circle"></i> Tambah Sumber Daya Baru
+    </a>
+
+    @if (Model == null || !Model.Any()) // Penanganan eksplisit untuk Model null atau kosong
+    {
+        <div class="alert-custom animate__animated animate__fadeInUp">
+            <i class="fas fa-exclamation-circle mb-3"></i>
+            <p>Belum ada materi atau sumber daya pelatihan yang tersedia saat ini.</p>
+            <p class="text-secondary">Silakan tambahkan resource baru.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="resource-card">
+                        <i class="fas fa-play-circle resource-icon"></i>
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">
+                            @(item.Description.Length > 120 ? item.Description.Substring(0, 120) + "..." : item.Description)
+                        </p>
+                        <div class="card-actions">
+                            <a href="@item.VideoUrl" class="btn btn-action-main" target="_blank">
+                                <i class="fas fa-video"></i> Tonton Video
+                            </a>
+                            <a asp-controller="Resource" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action-alt">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form asp-controller="Resource" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger-custom" onclick="return confirm('Yakin ingin menghapus sumber daya ini?')">
+                                    <i class="fas fa-trash-alt"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* Scripts (Jika ada, tempatkan di akhir body atau di _Layout.cshtml) *@
+@* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> *@

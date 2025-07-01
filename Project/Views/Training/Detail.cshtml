@@ -1,0 +1,477 @@
+﻿@model Project.Models.Training
+@{
+    ViewData["Title"] = "Detail Training";
+    var username = ViewBag.UserName ?? "Admin";
+    var role = ViewBag.Role ?? "user";
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+}
+
+@* Links untuk Font dan Bootstrap di _Layout.cshtml atau shared partial *@
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+
+@* Semua gaya CSS yang sama dari Index.cshtml harus disertakan di sini,
+   atau lebih baik lagi, pindahkan ke file CSS terpisah yang di-link di _Layout.cshtml *@
+<style>
+    /* Global Styles (bisa dipindahkan ke file CSS terpisah jika banyak halaman pakai gaya sama) */
+    :root {
+        --primary-red: #d50000;
+        --dark-maroon: #880e4f;
+        --accent-yellow: #ffeb3b;
+        --light-grey: #f8f9fa;
+        --white-color: #ffffff;
+        --black-color: #000000;
+        --text-dark: #333;
+        --button-success: #4CAF50;
+        --button-danger: #ef5350;
+        --button-warning: #ffeb3b;
+    }
+
+    body {
+        background: linear-gradient(180deg, var(--primary-red), var(--dark-maroon));
+        font-family: 'Montserrat', sans-serif;
+        color: var(--white-color);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: subtlePulse 15s infinite alternate;
+            z-index: -1;
+        }
+
+    /* Topbar */
+    .topbar {
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .topbar .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--white-color);
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: textGlow 2s infinite alternate;
+        }
+
+        .topbar .user {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .topbar .user strong {
+                color: var(--accent-yellow);
+                position: relative;
+                display: inline-block;
+                animation: rubberBand 1s forwards;
+            }
+
+    .wave-animation {
+        animation: wave 2s infinite;
+        transform-origin: 70% 70%;
+        display: inline-block;
+    }
+
+    /* Navbar */
+    .navbar-rounded {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        margin: 40px auto;
+        max-width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .navbar-item {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 12px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        color: var(--white-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .navbar-item:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-item.active {
+            background-color: var(--white-color);
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--accent-yellow);
+        }
+
+        .navbar-item i {
+            font-size: 1.2em;
+        }
+
+    /* Main Container */
+    .main-container {
+        padding: 40px;
+        animation: fadeIn 1s ease-out;
+        flex-grow: 1;
+    }
+
+    /* Detail Training Page - NEW STYLES & OVERRIDES */
+    .detail-container-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        color: var(--text-dark);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin: 50px auto;
+        max-width: 900px; /* Lebarkan sedikit */
+        animation: fadeIn 0.8s ease-out;
+        text-align: left; /* Ganti ke kiri untuk readability */
+    }
+
+        .detail-container-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px; /* Lebih besar */
+            font-weight: bold;
+            color: var(--primary-red);
+            margin-bottom: 25px;
+            position: relative;
+            text-align: center; /* Judul tetap di tengah */
+        }
+
+            .detail-container-card h2::after {
+                content: '';
+                display: block;
+                width: 80px; /* Lebih lebar */
+                height: 4px;
+                background-color: var(--accent-yellow);
+                margin: 15px auto 0; /* Tetap di tengah */
+                border-radius: 2px;
+            }
+
+    .detail-content {
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        margin-top: 30px;
+    }
+
+        .detail-content h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--dark-maroon);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-yellow);
+            padding-left: 15px;
+            animation: slideInLeft 0.7s ease-out;
+        }
+
+        .detail-content p {
+            font-size: 17px; /* Sedikit lebih besar */
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .detail-content ol, .detail-content ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+            list-style-type: decimal; /* Untuk Ordered List */
+            color: #444;
+        }
+
+        .detail-content li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .detail-content strong {
+            color: var(--primary-red);
+        }
+
+    .call-to-action-footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px dashed #ddd;
+    }
+
+    /* Button styles (Consistent with previous theme) */
+    .btn-action, .btn-main {
+        background-color: var(--primary-red);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+        .btn-action::before, .btn-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn-action:hover::before, .btn-main:hover::before {
+            left: 100%;
+        }
+
+        .btn-action:hover, .btn-main:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+        }
+
+    /* Specific button colors for CRUD and main buttons */
+    .btn-secondary-custom { /* Batal / Kembali */
+        background-color: rgba(255, 255, 255, 0.2);
+        color: var(--white-color);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+        .btn-secondary-custom:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+
+    /* Responsive Adjustments */
+    @@media (max-width: 992px) {
+        .detail-container-card {
+            padding: 30px;
+            margin: 30px auto;
+        }
+
+            .detail-container-card h2 {
+                font-size: 38px;
+            }
+
+        .detail-content h3 {
+            font-size: 22px;
+        }
+
+        .detail-content p {
+            font-size: 16px;
+        }
+
+        .detail-content li {
+            font-size: 15px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 15px;
+        }
+
+            .topbar .brand {
+                font-size: 22px;
+            }
+
+            .topbar .user {
+                font-size: 16px;
+            }
+
+        .navbar-rounded {
+            margin: 20px auto;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .navbar-item {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .detail-container-card {
+            padding: 20px;
+        }
+
+            .detail-container-card h2 {
+                font-size: 32px;
+            }
+
+        .detail-content h3 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="topbar">
+    <div class="brand">CorpTrain Weatherford</div>
+    <div class="user">Selamat datang, <strong>@username</strong> <i class="fas fa-hand-wave wave-animation"></i></div>
+</div>
+
+<div class="navbar-rounded">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Training" ? "active" : "")" asp-controller="Home" asp-action="Training">
+        <i class="fas fa-graduation-cap"></i> Training
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
+        <i class="fas fa-award"></i> Certification
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Resource" asp-action="Index">
+        <i class="fas fa-folder-open"></i> Resources
+    </a>
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
+        <i class="fas fa-shield-alt"></i> Privacy
+    </a>
+</div>
+
+<div class="main-container container">
+    <div class="detail-container-card animate__animated animate__fadeIn">
+        <h2>@Model.Title</h2>
+        <p class="text-center lead text-secondary">
+            @Model.Description
+        </p>
+
+        <div class="detail-content">
+            <h3>Pengantar</h3>
+            <p>Standar ini menguraikan kebijakan kita mengenai Hak Asasi Manusia dan komitmen kita untuk memastikan karyawan dan pemangku kepentingan kita diperlakukan secara bermartabat dan hormat. Standar ini mengikuti prinsip hak asasi manusia internasional yang ditemukan di Deklarasi Universal Hak Asasi Manusia, Prinsip Sukarela mengenai Keamanan dan Hak Asasi Manusia, dan Panduan Organisasi untuk Kerja sama dan Pengembangan Ekonomi (OECD) untuk Perusahaan Multinasional.</p>
+
+            <h3>SIAPA yang harus mematuhi standar ini?</h3>
+            <p>Semua orang di Weatherford – direktur, staf, dan karyawan – serta pihak ketiga yang melakukan bisnis atas nama kita di mana pun mereka berada.</p>
+
+            <h3>MENGAPA kita memiliki standar ini?</h3>
+            <p>Weatherford mewajibkan agar hak asasi manusia dihormati di seluruh tempat operasi kita, termasuk hak seluruh karyawan dan pemangku kepentingan eksternal yang berurusan dengan Weatherford untuk diperlakukan secara bermartabat dan hormat. Gagal menghargai hak asasi manusia dari karyawan dan pemangku kepentingan kita dapat menciptakan lingkungan kerja dan sosial yang menyebabkan rendahnya moralitas, pergantian karyawan, dan tenaga kerja yang tidak produktif, serta dapat menurunkan hubungan dengan pemangku kepentingan kita.</p>
+
+            <h3>PATUHI aturan.</h3>
+            <ol>
+                <li>
+                    <strong>Selalu hormati hak asasi manusia.</strong>
+                    <p>Perlakukan semua orang secara bermartabat dan hormat tanpa ada pengecualian. Weatherford berkomitmen untuk menghormati, melindungi, dan memenuhi hak asasi manusia dan kebebasan dasar dari semua orang yang bekerja di dalam atau yang terpengaruh oleh bisnis kita.</p>
+                </li>
+                <li>
+                    <strong>Jangan pernah melakukan diskriminasi.</strong>
+                    <p>Jangan melakukan diskriminasi dalam bentuk apa pun, baik itu berdasarkan jenis kelamin, ras, asal kewarganegaraan atau etnis, tempat tinggal, agama, bahasa, orientasi seksual, kemampuan fisik, veteran, atau status lainnya. Weatherford mewajibkan lingkungan yang memberikan kesempatan setara untuk semua karyawan di semua level tanpa memerhatikan jenis kelamin, ras, asal kewarganegaraan atau etnis, tempat tinggal, agama, bahasa, orientasi seksual, kemampuan fisik, veteran, atau status lainnya, afiliasi serikat atau politik, atau karakteristik lain yang dilindungi oleh undang-undang yang berlaku. Keputusan perekrutan, penempatan, gaji, dan promosi harus didasarkan pada kualifikasi, pengalaman, dan kinerja individu sambil memastikan bahwa kita meningkatkan keragaman di organisasi kita secara keseluruhan.</p>
+                </li>
+                <li>
+                    <strong>Jangan pernah membalas dendam.</strong>
+                    <p>Jangan membalas dendam dalam cara apa pun terhadap setiap orang yang membuat laporan dengan iktikad baik kepada perusahaan atau kepada otoritas publik yang kompeten mengenai kekhawatirannya tentang ketidakpatuhan terhadap kebijakan perusahaan, prosedur, atau hukum yang berlaku atau tentang perilaku tidak etis lainnya. Balas dendam meliputi tindakan karyawan yang dilarang seperti penghentian hubungan kerja, demosi, transfer, isolasi, atau penolakan promosi atau kenaikan pangkat.</p>
+                </li>
+                <li>
+                    <strong>Jangan pernah mempekerjakan tenaga kerja paksa, wajib, atau tenaga kerja yang dilarang lainnya.</strong>
+                    <p>Jangan gunakan tenaga kerja paksa (pekerjaan dilakukan bertentangan dengan kehendak tenaga kerja tersebut), tenaga kerja yang dipenjara, tenaga kerja terikat (misalnya tenaga kerja yang bekerja sebagai ganti penyelesaian kewajiban hukum), atau tenaga kerja terikat yang dieksploitasi (misalnya tenaga kerja yang bekerja sebagai ganti pembebasan hutang). Lakukan pengawasan yang wajar terhadap pihak ketiga yang melakukan pekerjaan atas permintaan Weatherford untuk memastikan mereka tidak menggunakan bentuk tenaga kerja yang dilarang ini. Semua pekerjaan harus diselesaikan secara sukarela artinya karyawan bebas untuk keluar, mogok, atau berhenti bekerja dengan cara yang aman sesuai dengan undang-undang yang berlaku.</p>
+                </li>
+                <li>
+                    <strong>Jangan pernah mempekerjakan tenaga kerja anak yang dilarang.</strong>
+                    <p>Jangan gunakan tenaga kerja anak yang bertentangan dengan undang-undang ketenagakerjaan setempat. Patuhi undang-undang setempat mengenai usia minimum bekerja. Lakukan pengawasan yang wajar terhadap pihak ketiga yang melakukan pekerjaan atas permintaan Weatherford untuk memastikan mereka tidak menggunakan tenaga kerja anak. Hal ini tidak melarang kesempatan kerja magang yang menguntungkan dan kesempatan belajar di tempat kerja yang serupa bagi pelajar.</p>
+                </li>
+                <li>
+                    <strong>Patuhi undang-undang setempat mengenai ketenagakerjaan, jam kerja, dan gaji.</strong>
+                    <p>Patuhi semua jam kerja wajib yang ditetapkan sesuai dengan undang-undang setempat atau perjanjian perundingan bersama yang berlaku. Kita harus beroperasi dengan mematuhi sepenuhnya semua undang-undang yang berlaku terkait gaji, upah lembur, dan tunjangan wajib yang dijamin oleh negara tempat kita beroperasi. Hingga sejauh yang dapat dilaksanakan, Weatherford berupaya untuk memberdayakan karyawan lokal dan menyediakan pelatihan dengan tujuan untuk meningkatkan tingkat keterampilan dalam bekerja sama dengan karyawan kita, perwakilan karyawan, jika ada, dan otoritas pemerintahan yang relevan.</p>
+                </li>
+                <li>
+                    <strong>Pertahankan lingkungan kerja yang aman, sehat, dan patuh.</strong>
+                    <p>Pertahankan lingkungan kerja tanpa bahaya yang dapat menyebabkan kecelakaan dan/atau cedera serta patuh terhadap undang-undang kesehatan dan keamanan yang berlaku.</p>
+                </li>
+                <li>
+                    <strong>Izinkan kebebasan berorganisasi dan perundingan bersama.</strong>
+                    <p>Hormati hak seluruh karyawan untuk bertindak bebas sesuai dengan undang-undang ketenagakerjaan setempat termasuk memilih untuk berpartisipasi atau tidak berpartisipasi dalam serikat pekerja tanpa takut akan adanya balas dendam, intimidasi, atau gangguan. Weatherford mengutamakan konsultasi dan kerja sama antara perusahaan dan karyawan serta perwakilannya mengenai hal yang menyangkut kepentingan bersama.</p>
+                </li>
+                <li>
+                    <strong>Berhenti bekerja kapan pun diperlukan.</strong>
+                    <p>Laksanakan hak Anda untuk berhenti bekerja tanpa takut akan adanya pembalasan ketika Anda menghadapi kondisi kesehatan dan keamanan yang tidak dapat diterima, atau situasi yang melibatkan potensi ketidakpatuhan terhadap kebijakan perusahaan, prosedur, atau undang-undang yang berlaku.</p>
+                </li>
+                <li>
+                    <strong>Hormati privasi.</strong>
+                    <p>Hormati hak privasi karyawan kita, pelanggan, dan pihak ketiga lainnya dan kumpulkan, gunakan, simpan, atau ungkap data personel hanya bila diperlukan untuk beroperasi secara efektif dan sesuai dengan undang-undang. Weatherford memiliki upaya-upaya untuk melindungi data personel, dan mengharapkan agar karyawan juga melakukan bagian mereka untuk melindungi data personel karyawan serta informasi rahasia Weatherford.</p>
+                </li>
+                <li>
+                    <strong>Dukung sarana pengaduan kita dan hormati transparansi melalui keadilan organisasi.</strong>
+                    <p>Dukung semua mekanisme untuk mengajukan kekhawatiran, yang termasuk namun tidak terbatas, kepada Manajer, Sumber Daya Manusia, Hukum dan Kepatuhan, Ombud Weatherford, dan sistem pelaporan milik perusahaan – Listen Up (www.ListenUpWFT.com). Budaya etis dan kepatuhan yang menghargai hak asasi manusia tidak dapat ada tanpa keadilan organisasi, sehingga Weatherford berupaya melakukan transparansi perusahaan melalui sarana pelaporan yang efektif, penyelesaian kekhawatiran dengan segera, pendisiplinan yang adil, dan akuntabilitas yang transparan, tidak ada pembalasan terhadap siapa pun, dan penilaian terus-menerus terhadap keefektifan proses perusahaan kita.</p>
+                </li>
+                <li>
+                    <strong>Identifikasikan dan pantau potensi dampak hak asasi manusia di industri kita.</strong>
+                    <p>Berkomitmen untuk mengidentifikasi dan memantau kinerja Weatherford yang berkaitan dengan potensi dampak terhadap hak asasi manusia dengan meningkatkan keragaman di organisasi kita, memantau dampak komunitas lokal yang disebabkan oleh kinerja kita, menilai risiko keamanan yang relevan terhadap perusahaan kita, dan melindungi lingkungan melalui evaluasi terus-menerus terhadap dampak lingkungan kita.</p>
+                </li>
+                <li>
+                    <strong>Harapkan hal yang sama dari pemasok kita.</strong>
+                    <p>Pantau kinerja para pemasok kita. Weatherford mengharapkan kepatuhan penuh terhadap persyaratan yang ada di Standar ini dari semua pemasoknya di seluruh dunia, sebagaimana ditetapkan dalam Pedoman Perilaku Pemasok Weatherford.</p>
+                </li>
+            </ol>
+        </div>
+
+        <div class="call-to-action-footer">
+            <p class="lead text-primary-custom" style="font-weight: 600;">
+                Silakan pelajari materi ini dengan seksama. Setelah selesai, Anda dapat kembali ke daftar pelatihan.
+            </p>
+            <a href="@Url.Action("Training", "Home")" class="btn btn-secondary-custom btn-lg mt-3"><i class="fas fa-arrow-left"></i> Kembali ke Daftar Pelatihan</a>
+        </div>
+    </div>
+</div>

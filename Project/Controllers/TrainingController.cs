@@ -28,16 +28,16 @@ namespace Project.Controllers
 
         private bool IsAdmin()
         {
-            return GetUserRole() == "Admin";
+            var role = HttpContext.Session.GetString("UserRole");
+            return role == "admin";
         }
-
         public IActionResult Index()
         {
+            GetUserRole(); // Refresh ViewBag
             var trainings = _context.Trainings.ToList();
             ViewBag.IsAdmin = IsAdmin();
             return View(trainings);
         }
-
         public IActionResult Create()
         {
             if (!IsAdmin()) return Unauthorized();
@@ -53,19 +53,14 @@ namespace Project.Controllers
             {
                 _context.Trainings.Add(training);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Training", "Home");
             }
-
             return View(training);
         }
-
         public IActionResult Edit(int id)
         {
             if (!IsAdmin()) return Unauthorized();
-
             var training = _context.Trainings.Find(id);
-            if (training == null) return NotFound();
-
             return View(training);
         }
 
@@ -73,29 +68,30 @@ namespace Project.Controllers
         public IActionResult Edit(Training training)
         {
             if (!IsAdmin()) return Unauthorized();
-
             if (ModelState.IsValid)
             {
                 _context.Trainings.Update(training);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Training", "Home");
             }
-
             return View(training);
         }
-
         public IActionResult Delete(int id)
         {
             if (!IsAdmin()) return Unauthorized();
-
             var training = _context.Trainings.Find(id);
             if (training != null)
             {
                 _context.Trainings.Remove(training);
                 _context.SaveChanges();
             }
-
-            return RedirectToAction("Index");
+            return RedirectToAction("Training", "Home");
+        }
+        public IActionResult Detail(int id)
+        {
+            var training = _context.Trainings.Find(id);
+            if (training == null) return NotFound();
+            return View(training);
         }
     }
 }

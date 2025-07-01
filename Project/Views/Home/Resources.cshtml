@@ -1,23 +1,51 @@
-﻿@{
-    ViewData["Title"] = "Resources";
+﻿@model List<Project.Models.Resource>
+
+@{
+    ViewData["Title"] = "Resources"; // Pastikan Title sesuai untuk navbar active state
     var username = ViewBag.UserName ?? "Admin";
+    var role = ViewBag.Role?.ToString();
+    var isAdmin = role == "admin"; // Lebih eksplisit menggunakan isAdmin
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+@* PENTING: Sangat disarankan untuk memindahkan semua tag <link> dan gaya <style> di bawah ini
+    ke dalam file _Layout.cshtml (untuk links) dan file CSS eksternal (misalnya site.css untuk gaya).
+    Ini adalah praktik terbaik dalam pengembangan web untuk manajemen kode yang lebih baik.
+    Jika Anda sudah memindahkannya, hapus bagian ini.
+*@
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
 <style>
-    /* Global Styles - Konsisten dengan halaman lain */
-    body {
-        background: linear-gradient(180deg, #d50000, #880e4f); /* Deeper, richer red to maroon gradient */
-        font-family: 'Montserrat', sans-serif;
-        color: white;
-        overflow-x: hidden; /* Prevent horizontal scroll due to animations */
-        position: relative;
+    /* Global Styles (Sebaiknya di site.css) */
+    :root {
+        --primary-red: #d50000;
+        --dark-maroon: #880e4f;
+        --accent-yellow: #ffeb3b;
+        --light-grey: #f8f9fa;
+        --white-color: #ffffff;
+        --black-color: #000000;
+        --text-dark: #333;
+        --button-success: #4CAF50;
+        --button-danger: #ef5350;
+        --button-warning: #ffc107;
+        --button-info: #17a2b8;
+        --gradient-bg: linear-gradient(180deg, var(--primary-red), var(--dark-maroon));
     }
 
-        /* Background Animation - Konsisten */
+    body {
+        background: var(--gradient-bg);
+        font-family: 'Montserrat', sans-serif;
+        color: var(--white-color);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+        /* Background pattern - Lebih halus, tanpa pulse yang mengganggu */
         body::before {
             content: '';
             position: absolute;
@@ -26,50 +54,51 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-            animation: subtlePulse 15s infinite alternate;
+            opacity: 0.7; /* Sedikit lebih transparan */
             z-index: -1;
         }
-    /* Topbar - Konsisten */
+
+    /* Topbar */
     .topbar {
-        background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent for depth */
+        background-color: rgba(0, 0, 0, 0.3);
         padding: 15px 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        backdrop-filter: blur(5px); /* Frosted glass effect */
+        backdrop-filter: blur(5px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
         .topbar .brand {
-            font-family: 'Playfair Display', serif; /* Elegant font for brand */
+            font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-weight: bold;
-            color: white;
+            color: var(--white-color);
             letter-spacing: 1.5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
-            animation: textGlow 2s infinite alternate;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            /* Hapus animation: textGlow */
         }
-    .topbar .user {
-        font-size: 18px;
-        color: rgba(255, 255, 255, 0.9);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
 
-        .topbar .user strong {
-            color: #ffeb3b; /* Accent color for username */
-            position: relative;
-            display: inline-block;
-            animation: rubberBand 1s forwards; /* Animation on load */
+        .topbar .user {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+            .topbar .user strong {
+                color: var(--accent-yellow);
+                /* Hapus animation: rubberBand */
+            }
 
     .wave-animation {
         animation: wave 2s infinite;
         transform-origin: 70% 70%;
         display: inline-block;
     }
-    /* Navbar - Konsisten */
+
+    /* Navbar */
     .navbar-rounded {
         display: flex;
         justify-content: center;
@@ -78,7 +107,7 @@
         padding: 20px;
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 50px;
-        margin: 40px auto; /* Centered and more vertical space */
+        margin: 40px auto;
         max-width: 90%;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(10px);
@@ -90,174 +119,314 @@
         border-radius: 30px;
         text-decoration: none;
         font-weight: 600;
-        color: white;
+        color: var(--white-color);
         display: flex;
         align-items: center;
         gap: 10px;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         position: relative;
         overflow: hidden;
     }
 
         .navbar-item:hover {
-            background-color: #ffeb3b; /* Vibrant yellow on hover */
-            color: #d50000; /* Dark red text */
-            transform: translateY(-5px) scale(1.05); /* Lift and slight enlarge */
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
         .navbar-item.active {
-            background-color: white;
-            color: #d50000;
+            background-color: var(--white-color);
+            color: var(--primary-red);
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            border: 2px solid #ffeb3b; /* Highlight active state */
+            border: 2px solid var(--accent-yellow);
         }
 
         .navbar-item i {
             font-size: 1.2em;
         }
 
-    /* Main Container - Konsisten */
+    /* Main Container - Adjusted for Centering */
     .main-container {
         padding: 40px;
-        animation: fadeIn 1s ease-out; /* Fade in content */
-    }
-    /* Section Title - Konsisten */
-    .section-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 42px; /* Larger font size */
-        font-weight: bold;
-        margin-bottom: 50px; /* More space */
-        color: white;
-        text-align: center;
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-        position: relative;
-        animation: textPop 1s ease-out forwards; /* Pop animation */
-    }
-
-    .section-title::after {
-        content: '';
-        display: block;
-        width: 80px;
-        height: 4px;
-        background-color: #ffeb3b; /* Underline accent */
-        margin: 15px auto 0;
-        border-radius: 2px;
-        animation: expandLine 1.5s ease-out forwards;
-    }
-    /* Resource Card - Disesuaikan dari Feature/Certification Card */
-    .resource-card {
-        background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque white */
-        color: #333;
-        border-radius: 20px; /* More rounded corners */
-        padding: 30px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow */
-        height: 100%;
-        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+        animation: fadeIn 1s ease-out;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
-        animation: fadeInUp 0.8s ease-out forwards; /* Fade in and up */
-        opacity: 0; /* Start hidden for animation */
     }
 
-        .resource-card:nth-child(1) {
-            animation-delay: 0.2s;
-        }
-        /* Stagger animation */
-        .resource-card:nth-child(2) {
-            animation-delay: 0.4s;
+    /* Section Title */
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px;
+        font-weight: bold;
+        margin-bottom: 50px;
+        color: var(--white-color);
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        animation: textPop 1s ease-out forwards;
+    }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-yellow);
+            margin: 15px auto 0;
+            border-radius: 2px;
+            animation: expandLine 1.5s ease-out forwards;
         }
 
-        .resource-card:nth-child(3) {
-            animation-delay: 0.6s;
-        }
+    /* Resource Card */
+    .resource-card {
+        background-color: var(--white-color);
+        color: var(--text-dark);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        height: 100%;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
 
-        .resource-card:nth-child(4) {
-            animation-delay: 0.8s;
-        }
-    /* For potential new cards */
+    /* Stagger animation for cards */
+    .resource-grid-item:nth-child(1) .resource-card {
+        animation-delay: 0.2s;
+    }
+
+    .resource-grid-item:nth-child(2) .resource-card {
+        animation-delay: 0.4s;
+    }
+
+    .resource-grid-item:nth-child(3) .resource-card {
+        animation-delay: 0.6s;
+    }
+    /* Add more as needed if you expect many cards */
 
     .resource-card:hover {
-        transform: translateY(-15px) rotateX(5deg); /* Lift, rotate slightly */
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25); /* More pronounced shadow */
-        background-color: #fff;
-        border-color: #ffeb3b; /* Highlight border on hover */
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border-color: var(--accent-yellow);
     }
 
     .resource-icon {
-        font-size: 55px; /* Larger icon */
-        color: #d50000;
-        margin-bottom: 25px; /* More space */
+        font-size: 60px;
+        color: var(--primary-red);
+        margin-bottom: 25px;
         transition: color 0.3s ease;
     }
 
     .resource-card:hover .resource-icon {
-        color: #ffeb3b; /* Change icon color on hover */
-        animation: spinIcon 0.5s ease-out; /* Spin icon on hover */
+        color: var(--accent-yellow);
+        animation: spinIcon 0.5s ease-out; /* Animasi ikon tetap, karena tidak "getar" */
     }
 
     .resource-card h5 {
         font-family: 'Montserrat', sans-serif;
-        font-weight: 700; /* Bolder */
-        font-size: 24px; /* Larger heading */
+        font-weight: 700;
+        font-size: 26px;
         margin-bottom: 15px;
-        color: #d50000;
+        color: var(--dark-maroon);
         letter-spacing: 0.5px;
     }
 
     .resource-card p {
-        font-size: 16px; /* Slightly larger text */
+        font-size: 16px;
         color: #555;
         line-height: 1.6;
-        flex-grow: 1; /* Make paragraphs take available space */
-        margin-bottom: 20px; /* Space before button/link */
+        flex-grow: 1;
+        margin-bottom: 20px;
     }
 
-    .btn-view-resource {
-        background-color: #d50000;
-        color: white;
+    /* Action Buttons within cards */
+    .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: auto;
+        width: 100%;
+    }
+
+    .btn-action-main, .btn-action-alt {
         border: none;
-        padding: 12px 30px; /* Larger button */
-        border-radius: 30px; /* More rounded button */
+        padding: 12px 25px;
+        border-radius: 30px;
         font-weight: 600;
         letter-spacing: 0.8px;
         transition: all 0.3s ease;
         overflow: hidden;
         position: relative;
         z-index: 1;
-        text-decoration: none; /* Ensure it looks like a button even if it's an <a> */
-        display: inline-block; /* For proper padding and width */
-        width: 75%; /* Consistent width */
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        white-space: nowrap; /* Mencegah teks tombol pecah baris */
     }
 
-        .btn-view-resource::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: all 0.5s ease;
-            z-index: -1;
+    .btn-action-main {
+        background-color: var(--primary-red);
+        color: white;
+        box-shadow: 0 5px 15px rgba(213, 0, 0, 0.3);
+    }
+
+        .btn-action-main:hover {
+            background-color: var(--dark-maroon);
+            color: var(--white-color);
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(136, 14, 79, 0.4);
         }
 
-        .btn-view-resource:hover::before {
-            left: 100%;
-        }
+    .btn-action-alt {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--text-dark);
+        border: 1px solid #ccc;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
 
-        .btn-view-resource:hover {
-            background-color: #ffeb3b; /* Yellow on hover */
-            color: #d50000; /* Dark red text on hover */
-            transform: scale(1.02); /* Slight scale on hover */
+        .btn-action-alt:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-red);
+            border-color: var(--accent-yellow);
+            transform: scale(1.02);
             box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
         }
 
-    /* Responsive Adjustments - Konsisten */
+    .btn-danger {
+        background-color: var(--button-danger);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        box-shadow: 0 5px 15px rgba(239, 83, 80, 0.3);
+        white-space: nowrap; /* Mencegah teks tombol pecah baris */
+    }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+        }
+
+    /* Custom Button for "Tambah Resource" */
+    .btn-create-resource {
+        background-color: var(--accent-yellow);
+        color: var(--primary-red);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(255, 235, 59, 0.3);
+        text-decoration: none;
+    }
+
+        .btn-create-resource:hover {
+            background-color: var(--white-color);
+            color: var(--dark-maroon);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-create-resource i {
+            font-size: 1.2em;
+        }
+
+    /* Message for no resources */
+    .alert-custom {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: var(--text-dark);
+        border: 1px solid var(--accent-yellow);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        animation: fadeIn 1s ease-out forwards;
+        opacity: 0;
+        max-width: 600px;
+        width: 100%;
+    }
+
+        .alert-custom i {
+            font-size: 40px;
+            color: var(--accent-yellow);
+            margin-bottom: 15px;
+        }
+
+    /* Grid for cards */
+    .resource-grid-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px; /* Jarak antar kartu lebih besar untuk estetika */
+        padding: 0 15px;
+        width: 100%;
+        max-width: 1200px; /* Batasi lebar container kartu di desktop */
+    }
+
+    .resource-grid-item {
+        flex: 0 0 auto;
+        width: calc(33.33% - 20px); /* Kalkulasi width untuk 3 kolom dengan gap */
+        max-width: 380px; /* Batasi lebar maksimum per kartu */
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 1200px) {
+        .resource-grid-item {
+            width: calc(50% - 15px); /* 2 kolom di layar menengah, sesuaikan gap */
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .section-title {
+            font-size: 38px;
+        }
+
+        .resource-card h5 {
+            font-size: 22px;
+        }
+
+        .resource-icon {
+            font-size: 50px;
+        }
+
+        .btn-create-resource {
+            padding: 10px 25px;
+            font-size: 0.9em;
+        }
+    }
+
     @@media (max-width: 768px) {
         .topbar {
             flex-direction: column;
@@ -294,20 +463,35 @@
             margin-bottom: 30px;
         }
 
+        .resource-grid-item {
+            width: 100%; /* 1 kolom di layar kecil */
+            max-width: 450px; /* Batasi lebar di mobile agar tidak terlalu lebar */
+        }
+
         .resource-card {
-            padding: 25px;
+            padding: 20px;
         }
 
         .resource-icon {
             font-size: 45px;
+            margin-bottom: 15px;
         }
 
         .resource-card h5 {
             font-size: 20px;
         }
 
-        .btn-view-resource {
-            width: 100%;
+        .btn-action-main, .btn-action-alt, .btn-danger {
+            padding: 10px 20px;
+            font-size: 0.9em;
+            gap: 5px;
+            width: 100%; /* Agar tombol di dalam card menumpuk */
+        }
+
+        .btn-create-resource {
+            padding: 8px 20px;
+            font-size: 0.85em;
+            width: 100%; /* Agar tombol Tambah juga responsif */
         }
     }
 </style>
@@ -327,7 +511,7 @@
     <a class="navbar-item @(ViewData["Title"].ToString() == "Certification" ? "active" : "")" asp-controller="Home" asp-action="Certification">
         <i class="fas fa-award"></i> Certification
     </a>
-    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Home" asp-action="Resources">
+    <a class="navbar-item @(ViewData["Title"].ToString() == "Resources" ? "active" : "")" asp-controller="Resource" asp-action="Index">
         <i class="fas fa-folder-open"></i> Resources
     </a>
     <a class="navbar-item @(ViewData["Title"].ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy">
@@ -336,37 +520,60 @@
 </div>
 
 <div class="main-container container">
-    <div class="section-title">Materi & Sumber Daya Pelatihan</div>
-    <div class="row g-4 justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="resource-card">
-                <div class="resource-icon"><i class="fas fa-file-pdf"></i></div> <h5>Panduan Keselamatan Kerja</h5>
-                <p>Dokumen PDF lengkap berisi standar operasional prosedur (SOP) keselamatan kerja terbaru untuk seluruh area operasional. Sangat penting untuk dibaca dan dipahami.</p>
-                <a href="#" class="btn-view-resource mt-auto">Lihat & Unduh</a>
-            </div>
+    <h2 class="section-title">Materi & Sumber Daya Pelatihan</h2>
+
+    @if (isAdmin)
+    {
+        <a asp-controller="Resource" asp-action="Create" class="btn btn-create-resource animate__animated animate__fadeInUp">
+            <i class="fas fa-plus-circle"></i> Tambah Sumber Daya Baru
+        </a>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert-custom animate__animated animate__fadeInUp">
+            <i class="fas fa-exclamation-circle mb-3"></i>
+            <p>Belum ada materi atau sumber daya pelatihan yang tersedia saat ini.</p>
+            @if (!isAdmin)
+            {
+                <p class="text-secondary">Silakan cek kembali nanti atau hubungi administrator.</p>
+            }
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="resource-card">
-                <div class="resource-icon"><i class="fas fa-video"></i></div>
-                <h5>Video Pelatihan Interaktif</h5>
-                <p>Koleksi video tutorial dan demonstrasi praktis untuk berbagai modul pelatihan teknis dan non-teknis. Visualisasi yang jelas untuk pemahaman yang lebih baik.</p>
-                <a href="#" class="btn-view-resource mt-auto">Tonton Video</a>
-            </div>
+    }
+    else
+    {
+        <div class="resource-grid-container">
+            @foreach (var item in Model)
+            {
+                <div class="resource-grid-item">
+                    <div class="resource-card">
+                        <i class="fas fa-play-circle resource-icon"></i>
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">
+                            @(item.Description.Length > 120 ? item.Description.Substring(0, 120) + "..." : item.Description)
+                        </p>
+                        <div class="card-actions">
+                            <a href="@item.VideoUrl" class="btn btn-action-main" target="_blank">
+                                <i class="fas fa-video"></i> Tonton Video
+                            </a>
+                            @if (isAdmin)
+                            {
+                                <a asp-controller="Resource" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action-alt">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form asp-controller="Resource" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus sumber daya ini?')">
+                                        <i class="fas fa-trash-alt"></i> Hapus
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="resource-card">
-                <div class="resource-icon"><i class="fas fa-globe"></i></div> <h5>Tautan & Referensi Eksternal</h5>
-                <p>Daftar tautan ke artikel, jurnal, dan situs web terkemuka yang relevan dengan industri dan area keahlian kami. Perkaya pengetahuan Anda dari sumber terpercaya.</p>
-                <a href="#" class="btn-view-resource mt-auto">Jelajahi Tautan</a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-10">
-            <div class="resource-card">
-                <div class="resource-icon"><i class="fas fa-book"></i></div>
-                <h5>E-Book & Buku Pegangan</h5>
-                <p>Kumpulan e-book dan buku pegangan digital yang mencakup topik-topik mendalam terkait teknis, manajemen, dan pengembangan profesional.</p>
-                <a href="#" class="btn-view-resource mt-auto">Baca Sekarang</a>
-            </div>
-        </div>
-    </div>
+    }
 </div>
+
+@* Scripts (Jika ada, tempatkan di akhir body atau di _Layout.cshtml) *@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
